@@ -467,8 +467,36 @@ EOF
     python -m pip install -e .
     ```
 
+## 5.6. Después de todo esto lo ideal es subir la librería a PyPI y los pasos recomendables son:
 
-# 6. Construir el paquete (sdist + wheel)
+- Crear cuenta en PyPI 
+  - Web: pypi.org → Register.
+
+- (Opcional pero muy recomendable) Crear cuenta en TestPyPI
+  - Web: test.pypi.org → Register.
+
+- Crear un API token en PyPI
+  - En tu cuenta de PyPI → “Account settings” → “API tokens”.
+  - Crea un token para este proyecto (por ejemplo help_core_pygame_token).
+  - Copia el token y guárdalo en un sitio seguro.
+
+- (Opcional) Crear un API token en TestPyPI
+  - Misma idea pero en test.pypi.org.
+
+- Instalar las herramientas en tu entorno de desarrollo (pyenv_dev_help)
+
+## 5.7. ¿Que es TestPyPI?
+ 
+- TestPyPI es una instancia separada del Python Package Index (PyPI), que es el repositorio oficial de paquetes de Python.
+- Su principal propósito es servir como un entorno de prueba para los desarrolladores de paquetes de Python.
+- 🔑 Propósito de TestPyPI:
+  - Probar el Proceso de Distribución: Te permite practicar y verificar que tu proceso de empaquetado y subida (utilizando herramientas como twine y wheel) funciona correctamente antes de lanzarlo al repositorio principal de PyPI.
+  - Experimentación Segura: Puedes experimentar con tu paquete, probar la instalación y asegurarte de que la metadata es correcta sin afectar ni contaminar el índice real de PyPI. Es ideal para la primera vez que subes un paquete o para probar actualizaciones significativas.
+  - Pruebas de Instalación: Los usuarios pueden descargar e instalar tus paquetes desde TestPyPI usando un índice URL específico (por ejemplo, con pip install --index-url https://test.pypi.org/simple/ <nombre_paquete>) para confirmar que la instalación es exitosa.
+
+**Es muy recomendable usarlo y nosotros lo incluiremos en nuestra lista de tareas.**
+
+# 6. Construir el paquete (sdist + wheel) y 
 
 El siguiente paso es construir el paquete distribuible con `python -m build`.
 
@@ -478,6 +506,7 @@ Con `pyenv_dev_help` activo y desde la raíz del proyecto:
 ## 6.1. Instalar la herramienta `build`
 
 ```bash
+source pyenv_dev_help/bin/activate
 python -m pip install --upgrade pip
 python -m pip install build
 ```

@@ -807,6 +807,22 @@ Con esto tienes el tutorial completo en un único texto, listo para guardar como
 
 if __name__ == "__main__":
     nombre_fichero = "help_core_pygame_tutorial.md"
-    with open(nombre_fichero, "w", encoding="utf-8") as f:
-        f.write(texto_tutorial)
-    print(f"Fichero generado: {nombre_fichero}")
+    
+    try:
+        # Usamos el modo "x" (creación exclusiva)
+        with open(nombre_fichero, "x", encoding="utf-8") as f:
+            f.write(texto_tutorial)
+        
+        print(f"✅ Fichero generado con éxito: {nombre_fichero}")
+
+    except FileExistsError:
+        # Se captura la excepción específica si el fichero ya existe
+        print(f"❌ ¡ERROR! El fichero ya existe: {nombre_fichero}. No se ha sobreescrito.")
+        # El programa continuará después del bloque try/except, 
+        # pero ya se ha avisado del error.
+    
+    except NameError:
+        # Añadido por si acaso 'texto_tutorial' no está definido
+        print("❌ ¡ERROR! La variable 'texto_tutorial' no está definida.")
+
+

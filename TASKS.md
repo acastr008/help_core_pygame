@@ -1,14 +1,19 @@
 # Tareas pendientes
 
-- Congelar una versión “interna” del proyecto 
-- Subir el proyecto a GitHub
 - Subir la librería a PyPI
 - Ampliar el parser del sistema de ayuda para detectar y representar tablas.
 - Ampliar el parser del sistema de ayuda para detectar y representar Links con acceso a web.
 
 # Tareas realizadas por orden cronológico
 
+- (2-dic-2025) "Versión inicial (fecha: 2-dic-2025)"
+  
+  - Hago algunas mejoras a debug_py_projet.py
+  - Creo el proyecto en GitHub
+  - Hago cambios en help_core_pygame_tutorial.md
+
 - (1-dic-2025)
+  
   - Consigo tener una librería clara: help_core_pygame
   - Paquete en src/help_core_pygame/
   - API pública: open_help_standalone, HelpConfig, HelpViewer, etc.
@@ -19,9 +24,11 @@
   - He generado un tutorial en Markdown + script Python que lo reconstruye cuando quieras.
 
 - (30-nov-2025)
-    - Se ha perdido la librería ePyPI y la librería editable en local. Abandono el uso de Gemini y paso a ChatGpt.
+  
+  - Se ha perdido la librería ePyPI y la librería editable en local. Abandono el uso de Gemini y paso a ChatGpt.
 
 - (28-nov-2025) 
+  
   - Se ha creado pyproyect.toml y la librería pip.
   - Se han creado los README ES/EN) y se ha reestructurado el proyecto.
   - Se ha proporcionado AI_GUIDE.md, LICENSE.md, ARCHITECTURE y AI_EXCLUDE
@@ -29,6 +36,7 @@
 - (27-nov-2025) Se ha creado pyproyect.toml y se crea la librería pip
 
 - (26-nov-2025)
+  
   - Se han vuelto a crear los README ES/EN) y se ha reestructurado el proyecto.
 
 # Tareas fallidas o descartadas por orden cronológico
