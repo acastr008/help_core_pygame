@@ -1,0 +1,11 @@
+**/__pycache__/**
+**/*.pyc
+**/*.pyo
+**/*.zip
+**/*.mp3
+**/*.wav
+**/*.ttf
+**/*.png
+**/*.jpg
+LOGS/
+OLD/

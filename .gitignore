@@ -1,0 +1,34 @@
+__pycache__/
+*.pyc
+*.pyo
+*.zip
+*.ttf
+*.log
+*.LOG
+
+# Cachés de Python
+__pycache__/
+*.py[cod]
+*.$py.class
+
+# Entornos virtuales
+pyenv_dev_help/
+venv/
+.env/
+.venv/
+
+# Artefactos de build
+dist/
+build/
+*.egg-info
+src/*.egg-info
+
+# Contenido no relevante
+OLD/
+LOGs/
+
+# Vim/editores
+*.swp
+*.swo
+
+
