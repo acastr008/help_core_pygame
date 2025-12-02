@@ -832,3 +832,19 @@ Si algo falla, usar el script de depuración y comprobar `sys.executable`, `VIRT
 ---
 
 Con esto tienes el tutorial completo en un único texto, listo para guardar como markdown y adaptar a tus necesidades.
+
+
+# Recordatorio de como crear un nuevo proyecto en GitHub y como subirlo.
+
+- Si no tenemos nada preparado en GitHub para ese proyecto por haber trabajado en local,  el primer 'git push', dará error fatal: No se ha configurado un destino..., es porque el repositorio remoto (en GitHub, por ejemplo) no existe aún. Hay que crear el repositorio en GitHub primero (vacío, sin README ni licencia inicial). Se necesitará después vincular Local y Remoto, pero después de crear el remoto, el push inicial fallará si no se hizo upstream. 
+- Recuerde que se necesitan credenciales debemos usar nuestro token(clasic). Si ya han caducado o aun no tenemos habrá que crearlo. Pedirá la clave de acceso de GitHub ligada a la cuenta de correo para crear un token que es el que sive de clave para crear un nuevo proyecto.
+
+Si todo va bien hay que ejecutar una serie de comando en el orden indicado:
+
+```
+git branch -M main (Renombrar rama local)
+git remote add origin <URL> (Vincular destino)
+git push -u origin main (Subir y establecer el vínculo permanente)
+```
+Los push siguientes se hacen simplemente con 'git push'.
+

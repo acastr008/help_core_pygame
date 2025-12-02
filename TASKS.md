@@ -6,14 +6,15 @@
 
 # Tareas realizadas por orden cronológico
 
-- (2-dic-2025) "Versión inicial (fecha: 2-dic-2025)"
-  
-  - Hago algunas mejoras a debug_py_projet.py
+- (2-dic-2025) 'cambios en help_core_pygame_tutorial.md y en debug_py_projet.py, Creo repositorio en GitHub y lo subo)
   - Creo el proyecto en GitHub
+  - Hago cambios en help_core_pygame_tutorial.md
+  - Hago algunas mejoras a debug_py_projet.py
+
+- (2-dic-2025) "Versión inicial (fecha: 2-dic-2025)"
   - Hago cambios en help_core_pygame_tutorial.md
 
 - (1-dic-2025)
-  
   - Consigo tener una librería clara: help_core_pygame
   - Paquete en src/help_core_pygame/
   - API pública: open_help_standalone, HelpConfig, HelpViewer, etc.
