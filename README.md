@@ -2,6 +2,9 @@
 
 ![License MIT](https://img.shields.io/badge/License-MIT-green.svg)
 
+[ Spanish README_ES.md is available ](https://github.com/acastr008/help_core_pygame/blob/main/README_ES.md)
+
+
 ## Overview
 
 `help_core_pygame` is a Python library designed to offer a **highly portable and independent help visualization solution**, based solely on **Pygame**.

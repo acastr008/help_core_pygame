@@ -1,20 +1,46 @@
 # Tareas pendientes
 
-- Subir la librería a PyPI
+
+
+  - Se ha mejorado la forma en que el programa localiza los archivos de recursos internos (assets). 
+    Esto garantiza que el audio y otros archivos se carguen correctamente, tanto si el módulo se ejecuta 
+    desde un entorno de desarrollo como si se instala como un paquete distribuible con pip.
+
+
+  - Se ha pasado README_EN.md a README.md y se ha incluido un link en él 
+    [Spanish README_ES.md is available](https://github.com/acastr008/help_core_pygame/blob/main/README_ES.md) 
+
+
+
+# Mejoras pendientes a más largo plazo
+
 - Ampliar el parser del sistema de ayuda para detectar y representar tablas.
 - Ampliar el parser del sistema de ayuda para detectar y representar Links con acceso a web.
 
-# Tareas realizadas por orden cronológico
+# Tareas ya realizadas por orden cronológico
+
+
+
+
+- (3-dic-2025) 
+  
+  - Se ha subido la librería a TestPyPI
+  - Se ha comprobado que funciona todo correctamente.
+  - Creamos un documento temporal Lo_que_estoy_haciendo_ahora.txt
+  - queda pendiente pasar lo de ese documento al documento help_core_pygame_tutorial_inacabado.md
 
 - (2-dic-2025) 'cambios en help_core_pygame_tutorial.md y en debug_py_projet.py, Creo repositorio en GitHub y lo subo)
+  
   - Creo el proyecto en GitHub
   - Hago cambios en help_core_pygame_tutorial.md
   - Hago algunas mejoras a debug_py_projet.py
 
 - (2-dic-2025) "Versión inicial (fecha: 2-dic-2025)"
+  
   - Hago cambios en help_core_pygame_tutorial.md
 
 - (1-dic-2025)
+  
   - Consigo tener una librería clara: help_core_pygame
   - Paquete en src/help_core_pygame/
   - API pública: open_help_standalone, HelpConfig, HelpViewer, etc.
