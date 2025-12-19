@@ -1,16 +1,112 @@
-
 ########## Copyright (c) ##########################################################
 # SPDX-FileCopyrightText: 2025 Antonio Castro Snurmacher <acastro0841@gmail.com>
 # SPDX-License-Identifier: MIT
 ###################################################################################
 
+"""
+######################################################################################################################
+Programa  : demo_help_standalone.py
+Versión   : 2.0  (17-dic-2025)
+Licencia de uso MIT
 
-# demos/demo_help_standalone.py
-# Descripción breve: Demo del módulo help_core.py Por sí solo al margen de PopupWindow.
+Descripción breve:
+    Demo de uso Demo standalone de help_core 
 
-import os
+Descripción extendida:
+    Demo de uso standalone de help_core con efecto de sonido al alcanzar los límites 
+    del scroll (top / bottom).
+    Permite visualizar en una pantalla un texto de ayuda en formato markdown. 
+    Carga assets empaquetados mediante importlib.resources.as_file() para obtener
+    una ruta REAL en disco (aunque el paquete esté dentro de un wheel/zip).
+    Incluye un pequeño gestor de assets y una demo de help_core_pygame.
+
+Requisitos:
+    - Python 3.11
+    - Pygame
+    - Módulo help_core en el PYTHONPATH
+    - Fichero de sonido: mp3/beep_scroll.mp3
+######################################################################################################################
+"""
+
+from __future__ import annotations
+
+from contextlib import ExitStack
+from dataclasses import dataclass
+from importlib import resources
+from pathlib import Path
+from typing import Optional, Callable
+
 import pygame
-from help_core_pygame import open_help_standalone
+
+try:
+    # API típica de tu librería (ajusta si tu nombre o función cambia)
+    from help_core_pygame import open_help_standalone
+except Exception as exc:  # noqa: BLE001
+    raise SystemExit(
+        "No se pudo importar 'help_core_pygame'. "
+        "Instala el paquete o ejecuta en un entorno donde esté disponible."
+    ) from exc
+
+
+@dataclass
+class PackageAssetManager:
+    """
+    Gestor de assets empaquetados.
+
+    Idea clave:
+    - resources.files(...) devuelve un objeto "traversable" (navegable) que puede no ser un Path real.
+    - resources.as_file(...) garantiza un Path REAL (en disco) mientras el contexto esté abierto.
+
+    Este manager usa ExitStack para mantener vivos esos contextos durante toda la ejecución.
+    """
+    package_name: str
+    _exit_stack: ExitStack = ExitStack()
+
+    def close(self) -> None:
+        """Cierra el ExitStack y libera recursos temporales."""
+        self._exit_stack.close()
+
+    def get_real_path(self, relative_path: str) -> Path:
+        """
+        Devuelve un Path REAL del sistema de archivos para un asset.
+
+        :param relative_path: Ruta relativa dentro del paquete (ej. "assets/mp3/beep_scroll.mp3")
+        :return: Path real en disco válido para librerías externas (pygame, etc.)
+        :raises FileNotFoundError: Si el recurso no existe en el paquete instalado.
+        """
+        resource_entry = resources.files(self.package_name).joinpath(relative_path)
+
+        # Hacemos exists() que es la comprobación correcta a nivel de "recurso dentro del paquete".
+        if not resource_entry.exists():
+            raise FileNotFoundError(
+                f"Asset no encontrado en el paquete '{self.package_name}': {relative_path}"
+            )
+
+        # as_file(...) garantiza un Path real incluso si el paquete está en zip/wheel.
+        real_path = self._exit_stack.enter_context(resources.as_file(resource_entry))
+        print ("Path Asset OK= ", real_path)
+        return Path(real_path)
+
+
+def load_sound(asset_manager: PackageAssetManager, relative_path: str) -> Optional[pygame.mixer.Sound]:
+    """
+    Carga un sonido desde assets empaquetados, devolviendo None si no se puede.
+
+    :param asset_manager: Gestor de assets del paquete.
+    :param relative_path: Ruta relativa del mp3 dentro del paquete.
+    :return: pygame.mixer.Sound o None si falla.
+    """
+    try:
+        sound_path = asset_manager.get_real_path(relative_path)
+        return pygame.mixer.Sound(str(sound_path))
+    except FileNotFoundError as exc:
+        print(f"ADVERTENCIA: {exc}")
+        return None
+    except Exception as exc:  # noqa: BLE001
+        # Captura genérica para evitar que una demo se caiga por audio/SDL.
+        print(f"ADVERTENCIA: No se pudo cargar el sonido '{relative_path}': {exc}")
+        return None
+
 
 
 TEST_MD="""
@@ -119,50 +215,47 @@ Fin de la ayuda. (Pulse la tecla **F1** para salir)
 
 """
 
-# ----------------------------------------------------------------------
-# 1. Obtener la ruta del directorio del script actual (examples/)
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-
-# 2. Definir la ruta base del proyecto subiendo un nivel
-# Esto asume que el directorio 'examples' está en la raíz del proyecto
-PROJECT_ROOT = os.path.join(SCRIPT_DIR, '..')
-# ----------------------------------------------------------------------
 
 def main() -> None:
+    # Inicialización básica de pygame (audio incluido).
     pygame.init()
+    try:
+        pygame.mixer.init()
+    except Exception as exc:  # noqa: BLE001
+        # Si audio no está disponible, la demo debe seguir funcionando sin beep.
+        print(f"ADVERTENCIA: No se pudo inicializar pygame.mixer: {exc}")
+
+    asset_manager = PackageAssetManager("help_core_pygame")
+
+    # Carga robusta del beep desde el paquete instalado.
+    beep_sound = load_sound(asset_manager, "assets/mp3/beep_scroll.mp3")
+
+    def on_scroll_limit(_where: str) -> None:
+        # _where suele indicar top/bottom si tu API lo pasa; aquí no lo necesitamos.
+        if beep_sound is not None:
+            try:
+                beep_sound.play()
+            except Exception as exc:  # noqa: BLE001
+                print(f"ADVERTENCIA: No se pudo reproducir el beep: {exc}")
 
     try:
-        # Construir la ruta absoluta al asset, basándose en la nueva estructura
-        asset_path = os.path.join(PROJECT_ROOT, "src", "help_core_pygame", "assets", "mp3", "beep_scroll.mp3")
-        beep_sound = pygame.mixer.Sound(asset_path)
-    except pygame.error as exc:
-        print(f"Error cargando 'mp3/beep_scroll.mp3' en demo_help_standalone: {exc}")
-        beep_sound = None
-
-    def beep_on_limit(_where: str) -> None:
-        if beep_sound is not None:
-            beep_sound.play()
-
-    # Si quieres usar tus TTF/JSON de estilos, pásalos aquí:
-    open_help_standalone(
-        TEST_MD,
-        title="Demo Help Standalone",
-        size=(1200, 900),
-        # style_json_path="popup_gui/Style_Popup_Dialog_Py.json",
-        # style_variant="formal",
-        # fonts_dir="fonts",
-        # help_font_file="DejaVuSans.ttf",
-        # help_code_font_file="DejaVuSansMono.ttf",
-        indent_spaces_per_level=2,
-        visual_indent_px=24,
-        wheel_step=48,
-        kernel_bg=(222, 222, 222),
-        on_scroll_limit=beep_on_limit,
-        scroll_limit_cooldown_ms=300,
-    )
+        # Ajusta parámetros según tu firma real de open_help_standalone.
+        open_help_standalone(
+            TEST_MD,
+            title="Help Standalone - Asset safe",
+            size=(1200, 900),
+            on_scroll_limit=on_scroll_limit,
+            scroll_limit_cooldown_ms=300,
+        )
+    finally:
+        # Importante: libera recursos temporales (si el paquete requiere extracción).
+        asset_manager.close()
+        try:
+            pygame.quit()
+        except Exception:  # noqa: BLE001
+            pass
 
 
 if __name__ == "__main__":
     main()
-
 

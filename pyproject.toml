@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 name = "help-core-pygame"         # Nombre único para el proyecto PyPI (único)
 version = "0.1.1"
 description = "Help module for overlays and contextual help in Pygame"
-readme = "README.md"
+readme = "README.md"  # Cambiado en esta version
 requires-python = ">=3.9"
 authors = [
   { name = "Antonio Castr Snurmacher", email = "acastro0841@gmail.com" },
@@ -35,5 +35,5 @@ Issues = "https://github.com/acastr008/help_core_pygame/issues" # Pagina donde G
 where = ["src"]
 
 [tool.setuptools.package-data]
-"help_core_pygame" = ["assets/*.mp3"]
+help_core_pygame = ["assets/**/*.mp3"] # Cambiado en esta versión
 

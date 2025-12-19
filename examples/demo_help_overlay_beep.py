@@ -1,4 +1,3 @@
-
 ########## Copyright (c) ##########################################################
 # SPDX-FileCopyrightText: 2025 Antonio Castro Snurmacher <acastro0841@gmail.com>
 # SPDX-License-Identifier: MIT
@@ -7,12 +6,19 @@
 """
 ######################################################################################################################
 Programa  : demo_help_overlay_beep.py
-Versión   : 1.0  (22-nov-2025)
+Versión   : 2.0  (17-dic-2025)
 Licencia de uso MIT
 
 Descripción breve:
-    Demo de uso embebido de help_core con efecto de sonido al alcanzar
-    los límites del scroll (top / bottom), espaciado 300 ms.
+    Demo de uso Demo embebido de help_core 
+
+Descripción extendida:
+    Demo de uso embebido de help_core con efecto de sonido al alcanzar los límites 
+    del scroll (top / bottom).
+    Permite visualizar en una pantalla un texto de ayuda en formato markdown. 
+    Carga assets empaquetados mediante importlib.resources.as_file() para obtener
+    una ruta REAL en disco (aunque el paquete esté dentro de un wheel/zip).
+    Incluye un pequeño gestor de assets y una demo de help_core_pygame.
 
 Requisitos:
     - Python 3.11
@@ -21,19 +27,20 @@ Requisitos:
     - Fichero de sonido: mp3/beep_scroll.mp3
 ######################################################################################################################
 """
-
 from __future__ import annotations
 
 import sys, os
-from typing import Tuple
-
+from contextlib import ExitStack
+from dataclasses import dataclass
+from importlib import resources
+from pathlib import Path
+from typing import Optional, Callable, Tuple
 import pygame
 
 from help_core_pygame import HelpConfig, HelpViewer
 
 
 RGB = Tuple[int, int, int]
-
 
 HELP_MD_TEXT = """# Demo de ayuda embebida
 
@@ -72,6 +79,76 @@ HELP_MD_TEXT = """# Demo de ayuda embebida
    - Los eventos de ratón.
 """
 
+try:
+    # API típica de tu librería (ajusta si tu nombre o función cambia)
+    from help_core_pygame import open_help_standalone
+except Exception as exc:  # noqa: BLE001
+    raise SystemExit(
+        "No se pudo importar 'help_core_pygame'. "
+        "Instala el paquete o ejecuta en un entorno donde esté disponible."
+    ) from exc
+
+
+@dataclass
+class PackageAssetManager:
+    """
+    Gestor de assets empaquetados.
+
+    Idea clave:
+    - resources.files(...) devuelve un objeto "traversable" (navegable) que puede no ser un Path real.
+    - resources.as_file(...) garantiza un Path REAL (en disco) mientras el contexto esté abierto.
+
+    Este manager usa ExitStack para mantener vivos esos contextos durante toda la ejecución.
+    """
+    package_name: str
+    _exit_stack: ExitStack = ExitStack()
+
+    def close(self) -> None:
+        """Cierra el ExitStack y libera recursos temporales."""
+        self._exit_stack.close()
+
+    def get_real_path(self, relative_path: str) -> Path:
+        """
+        Devuelve un Path REAL del sistema de archivos para un asset.
+
+        :param relative_path: Ruta relativa dentro del paquete (ej. "assets/mp3/beep_scroll.mp3")
+        :return: Path real en disco válido para librerías externas (pygame, etc.)
+        :raises FileNotFoundError: Si el recurso no existe en el paquete instalado.
+        """
+        resource_entry = resources.files(self.package_name).joinpath(relative_path)
+
+        # Hacemos exists() que es la comprobación correcta a nivel de "recurso dentro del paquete".
+        if not resource_entry.exists():
+            raise FileNotFoundError(
+                f"Asset no encontrado en el paquete '{self.package_name}': {relative_path}"
+            )
+
+        # as_file(...) garantiza un Path real incluso si el paquete está en zip/wheel.
+        real_path = self._exit_stack.enter_context(resources.as_file(resource_entry))
+        print ("Path Asset OK= ", real_path)
+        return Path(real_path)
+
+
+def load_sound(asset_manager: PackageAssetManager, relative_path: str) -> Optional[pygame.mixer.Sound]:
+    """
+    Carga un sonido desde assets empaquetados, devolviendo None si no se puede.
+
+    :param asset_manager: Gestor de assets del paquete.
+    :param relative_path: Ruta relativa del mp3 dentro del paquete.
+    :return: pygame.mixer.Sound o None si falla.
+    """
+    try:
+        sound_path = asset_manager.get_real_path(relative_path)
+        return pygame.mixer.Sound(str(sound_path))
+    except FileNotFoundError as exc:
+        print(f"ADVERTENCIA: {exc}")
+        return None
+    except Exception as exc:  # noqa: BLE001
+        # Captura genérica para evitar que una demo se caiga por audio/SDL.
+        print(f"ADVERTENCIA: No se pudo cargar el sonido '{relative_path}': {exc}")
+        return None
+
+
 
 def create_help_viewer(screen: pygame.Surface, beep_sound: pygame.mixer.Sound | None) -> tuple[HelpViewer, pygame.Rect]:
     """Crea y monta un HelpViewer a pantalla completa con callback de beep opcional."""
@@ -99,24 +176,10 @@ def create_help_viewer(screen: pygame.Surface, beep_sound: pygame.mixer.Sound | 
 def help_overlay_loop(screen: pygame.Surface, canvas: pygame.Surface) -> None:
     """Bucle modal de ayuda superpuesto al contenido, con beep de límite de scroll."""
 
-    # --- CALCULAR RUTA DEL ASSET  ----------------------------------------------------------------------
-    # 1. Obtener la ruta del directorio del script actual (examples/)
-    SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-    # 2. Definir la ruta base del proyecto subiendo un nivel
-    PROJECT_ROOT = os.path.join(SCRIPT_DIR, '..')
-    
-    # 3. Construir la ruta absoluta al asset, siguiendo la estructura src/paquete/assets/mp3
-    asset_path = os.path.join(PROJECT_ROOT, "src", "help_core_pygame", "assets", "mp3", "beep_scroll.mp3")
-    # ----------------------------------------------------------------------------------------------------
-    
-    # Intentamos cargar el efecto de sonido. Si falla, la demo sigue sin beep.
-    beep_sound: pygame.mixer.Sound | None
-    try:
-        # Usar la ruta absoluta
-        beep_sound = pygame.mixer.Sound(asset_path)
-    except pygame.error as exc:
-        print(f"Error cargando 'mp3/beep_scroll.mp3' en demo_help_overlay_beep: {exc}")
-        beep_sound = None
+    asset_manager = PackageAssetManager("help_core_pygame")
+
+    # Carga robusta del beep desde el paquete instalado.
+    beep_sound = load_sound(asset_manager, "assets/mp3/beep_scroll.mp3")
 
     viewer, rect = create_help_viewer(screen, beep_sound)
 
@@ -173,7 +236,8 @@ def main() -> None:
 
     # Fuente para el mensaje inferior
     ui_font = pygame.font.Font(None, 28)
-    ui_text = "Pulsa F1 para ver la ayuda. ESC para salir."
+    tab=' '*10
+    ui_text = f"{tab}1) Prueba a dibujar algo con el ratón.{tab}2) Pulsa F1 para ver la ayuda.{tab}3) Pulsa ESC para salir."
     ui_text_color: RGB = (0, 0, 0)
     ui_bg_color: RGB = (100, 100, 250)
 
