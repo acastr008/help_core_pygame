@@ -1,26 +1,29 @@
 # Tareas pendientes
 
-- En curso
+- Continuar con form_core_pygame para terminar pasándola a PyPI
   
-  - Se ha vuelto a renombrar el camino del PATH del proyeto (.../CODEX_PyPI/... nuevamente a .../CODEX/...  
-    Se ha incuido un directorio tools y en él tenemos diagnose_help_core_pygame_assets_v2.py
-  - Se aplicaron las correcciones al tutorial: /home/antonio/Escritorio/PROYECTOS_PROGR_ACTIVOS/CODEX/TUTORIALES/Como_crear_y_subir_liberias_a _PyPI/CORRECIONES_18-dic_2025.odt
   - 
 
-**ME QUEDO EN**
-
-- Hay que crear un Changelog
-- *** hay que pasarlo a GitHUB y a PyPY***
 
 # Mejoras pendientes a más largo plazo
 
 - Ampliar el parser del sistema de ayuda para detectar y representar tablas.
-- Ampliar el parser del sistema de ayuda para detectar y representar Links con acceso a web.
+- Ampliar el parser del sistema de ayuda para detectar y representar Links con acceso a web. y link con acceso a cabeceras .
 
 # Tareas ya realizadas por orden cronológico
 
-- (19-dic-2025)
+- (5-ene-2026) Dos cambios en el [project] del fichero pyproject.toml
 
+  - version = "0.1.2"       # Preparado ya para la próxima versión
+  - authors = [ { name = "Antonio Castro Snurmacher", email = "acastro0841@gmail.com" }, ]  # Corrección errata
+
+
+- (22-dic-2025)
+
+  - Subir la version [0.1.1] a TestPyPI y a PyPI
+
+- (19-dic-2025)
+  
   - Se corrigió la forma en que el programa localiza los archivos de recursos internos (assets). para garantizar que el audio se cargue correctamente, tanto si el módulo se ejecuta desde un entorno de desarrollo como si se accede al paquete en PyPI.
   - Se ha incuido un directorio tools y en él tenemos diagnose_help_core_pygame_assets_v2.py
   - (Externamente al proyecto se han realizado pruebas en Escritorio/PRUEBAS y se ha corregido y ampliado el documento ~/Escritorio/PROYECTOS_PROGR_ACTIVOS/CODEX/TUTORIALES/Como_crear_y_subir_liberias_a _PyPI)

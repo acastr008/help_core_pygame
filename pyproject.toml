@@ -5,12 +5,12 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "help-core-pygame"         # Nombre único para el proyecto PyPI (único)
-version = "0.1.1"
+version = "0.1.2"
 description = "Help module for overlays and contextual help in Pygame"
 readme = "README.md"  # Cambiado en esta version
 requires-python = ">=3.9"
 authors = [
-  { name = "Antonio Castr Snurmacher", email = "acastro0841@gmail.com" },
+  { name = "Antonio Castro Snurmacher", email = "acastro0841@gmail.com" },
 ]
 # license = { file = "LICENSE.md" }  # Enlaza directamente al archivo de licencia
 license = "MIT"
