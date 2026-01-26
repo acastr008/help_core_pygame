@@ -1582,3 +1582,100 @@ def open_help_standalone(
     HelpViewer(cfg).open_window()
 
 
+
+# ---------------------------------------------------------------------------------
+# Función de conveniencia para mostrar ayuda Markdown como overlay modal en Pygame
+# ---------------------------------------------------------------------------------
+def ShowHelpOverlay(
+    display: pygame.Surface,
+    md_text: str,
+    title: str = "Ayuda",
+    *,
+    exit_keys: Tuple[int, ...] = (pygame.K_ESCAPE,),
+    fps: int = 60,
+    kernel_bg: Tuple[int, int, int] = (222, 222, 222),
+    wheel_step: int = 48,
+    scroll_limit_cooldown_ms: int = 300,
+) -> None:
+    """
+    Muestra una ayuda en formato Markdown como overlay modal sobre el display.
+
+    Parameters
+    ----------
+    display:
+        Surface principal de Pygame donde se dibujará el overlay.
+    md_text:
+        Contenido en Markdown a mostrar.
+    title:
+        Título de la ayuda.
+    exit_keys:
+        Teclas que cierran la ayuda (por defecto ESC).
+    fps:
+        Límite de FPS del bucle modal.
+    kernel_bg:
+        Color de fondo del área de ayuda.
+    wheel_step:
+        Paso de scroll por rueda.
+    scroll_limit_cooldown_ms:
+        Cooldown del “límite” de scroll (si está implementado en el viewer).
+
+    Returns
+    -------
+    None
+    """
+    if display is None:
+        raise ValueError("display no puede ser None")
+
+    rect = display.get_rect()
+
+    # Guardamos el frame actual para restaurar por debajo del overlay
+    canvas = display.copy()
+
+    # Construimos configuración de ayuda
+    cfg = HelpConfig(
+        md_text=md_text,
+        title=title,
+        size=display.get_size(),
+        kernel_bg=kernel_bg,
+        wheel_step=wheel_step,
+        scroll_limit_cooldown_ms=scroll_limit_cooldown_ms,
+    )
+
+    viewer = HelpViewer(cfg)
+    viewer.on_mount(rect)
+
+    clock = pygame.time.Clock()
+
+    # Guardar y ajustar autorepeat durante el modal (mejora navegación con teclas)
+    prev_delay, prev_interval = pygame.key.get_repeat()
+    pygame.key.set_repeat(250, 40)
+
+    try:
+        running = True
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                    continue
+
+                if event.type == pygame.KEYDOWN and event.key in exit_keys:
+                    running = False
+                    continue
+
+                viewer.handle_event(event)
+
+            # Restaurar y dibujar overlay
+            display.blit(canvas, (0, 0))
+            viewer.draw(display, rect)
+            pygame.display.flip()
+            clock.tick(fps)
+    finally:
+        viewer.on_unmount()
+
+        # Restaurar autorepeat al estado anterior
+        if prev_delay == 0 and prev_interval == 0:
+            pygame.key.set_repeat()
+        else:
+            pygame.key.set_repeat(prev_delay, prev_interval)
+
+

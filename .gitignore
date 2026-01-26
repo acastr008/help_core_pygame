@@ -26,6 +26,7 @@ src/*.egg-info
 # Contenido no relevante
 OLD/
 LOGs/
+PRIVATE/
 
 # Vim/editores
 *.swp

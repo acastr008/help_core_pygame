@@ -1,25 +1,51 @@
 # Tareas pendientes
 
+- Implementar ShowHelpOverlay para complementar popups_dialog_gui
 - Continuar con form_core_pygame para terminar pasándola a PyPI
-  
-  - 
-
+- commit -m 'Iniciando cambios para la futura versión v0.1.2'
+      - Primer cambio .....
 
 # Mejoras pendientes a más largo plazo
 
-- Ampliar el parser del sistema de ayuda para detectar y representar tablas.
-- Ampliar el parser del sistema de ayuda para detectar y representar Links con acceso a web. y link con acceso a cabeceras .
+- Ampliar el parser del sistema de ayuda para detectar y representar
+  - Links con acceso a web. links con acceso a cabeceras y a links con aceso anclas HTML tipo <a id="etiqueta"></a> .
+  - Comentarios HTML
+  - Tablas sencillas
+  - Imágenes
+- Programa para visualizar un fichero MarkDown pasado como parámetro.
+
+## Links (web + anchors internos)
+
+Parser: simple.
+Layout: casi nada nuevo.
+Interacción: razonable.
+Dependencias: ninguna extra (solo webbrowser).
+
+## Imágenes (locales)
+
+Parser: sencillo.
+Recursos + caché + escalado: trabajo, pero controlable.
+Dependencias: con Pygame basta si te limitas a formatos básicos.
+
+## Tablas
+
+Parser: bastante más enrevesado.
+Layout: lo más complejo (ancho columnas, alto filas, word-wrap por celda).
+Dependencias: opcionalmente podrías apoyarte en una lib de Markdown, pero no lo hemos hecho hasta ahora y eso complica el ecosistema.
 
 # Tareas ya realizadas por orden cronológico
 
-- (5-ene-2026) Dos cambios en el [project] del fichero pyproject.toml
+- (25-ene-2026) Iniciando cambios para la futura versión v0.1.2
 
-  - version = "0.1.2"       # Preparado ya para la próxima versión
-  - authors = [ { name = "Antonio Castro Snurmacher", email = "acastro0841@gmail.com" }, ]  # Corrección errata
-
+  - (25-ene) En src/help_core_pygame/help_core.py añado la función de conveniencia  ShowHelpOverlay()   
+  - (25-ene) Añado una demo examples/demo_help_show_overlay_circles.py 
+  - (24-ene) En .gitignore añado PRIVATE/  
+  - (5-ene) Dos cambios en el [project] del fichero pyproject.toml
+    - version = "0.1.2"       # Preparado ya para la próxima versión
+    - authors = [ { name = "Antonio Castro Snurmacher", email = "acastro0841@gmail.com" }, ]  # Corrección errata
 
 - (22-dic-2025)
-
+  
   - Subir la version [0.1.1] a TestPyPI y a PyPI
 
 - (19-dic-2025)
