@@ -1,5 +1,14 @@
 from __future__ import annotations
 
+# En esta nueva versión número 7 retocada, se corrige la visualización de marcadores de ancla:
+#  - El marcador de ancla incluye 'runs': [] para no romper el render (KeyError).
+#  - Se elimina cualquier resto de self._line_h en el código del marcador.
+#  - Los anclas cuando se visibilizan salen en amarillo
+
+#                                ****************************************
+#  - Se ha chequeado con la demo ***todos los casos de links funcionan***
+#                                ****************************************
+
 ########## Copyright (c) ##########################################################
 # SPDX-FileCopyrightText: 2025 Antonio Castro Snurmacher <acastro0841@gmail.com>
 # SPDX-License-Identifier: MIT
@@ -193,6 +202,8 @@ Se puede generar un fichero con LibreOffice y pasarlo a formato markdown luego c
 import os
 import re
 import json
+import webbrowser
+import unicodedata
 from dataclasses import dataclass
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
@@ -310,6 +321,10 @@ class _MiniMarkdown:
 
         self._re_inline_code = re.compile(r"`([^`]+)`")
         self._re_url         = re.compile(r"(https?://\S+)")
+        # Enlaces Markdown básicos: [texto](destino). Se excluyen imágenes ![...](...)
+        self._re_md_link     = re.compile(r"(?<!!)\[([^\]]+)\]\(([^)]+)\)")
+        # Anclas HTML: <a id="etiqueta"></a> (se ignoran espacios alrededor)
+        self._re_html_anchor = re.compile(r"^\s*<a\s+id=\"([^\"]+)\"\s*>\s*</a>\s*$")
 
     def normalize(self, text: str) -> str:
         return text.replace("\t", " " * self.tab_size).replace("\r\n", "\n").replace("\r", "\n")
@@ -343,6 +358,13 @@ class _MiniMarkdown:
 
             if in_fence:
                 fence_buf.append(line)  # ← dentro del fence, preservamos TODO, incluidas líneas vacías
+                i += 1
+                continue
+
+            # Ancla HTML: <a id="etiqueta"></a>
+            m_anchor = self._re_html_anchor.match(line)
+            if m_anchor:
+                out.append({"type": "anchor", "id": m_anchor.group(1)})
                 i += 1
                 continue
 
@@ -462,31 +484,82 @@ class _MiniMarkdown:
                     "bold": bool(flags.get("b") or flags.get("bi")),
                     "italic": bool(flags.get("i") or flags.get("bi")),
                     "code": False,
-                    "link": False
+                    "link": False,
+                    "href": ""
                 })
 
         for seg, is_code in parts:
             if is_code:
-                runs.append({"text": seg, "bold": False, "italic": False, "code": True, "link": False})
+                runs.append({"text": seg, "bold": False, "italic": False, "code": True, "link": False, "href": ""})
             else:
                 emit_plain(seg)
 
-        # URLs
-        final: List[Dict[str, Any]] = []
+
+        # Links y URLs
+        # 1) Expandir enlaces Markdown [texto](destino) fuera de inline code.
+        expanded: List[Dict[str, Any]] = []
         for r in runs:
-            if r["code"] or not r["text"]:
+            if r.get("code") or not r.get("text"):
+                expanded.append(r)
+                continue
+
+            seg = str(r["text"])
+            pos = 0
+            for m_link in self._re_md_link.finditer(seg):
+                if m_link.start() > pos:
+                    expanded.append({**r, "text": seg[pos:m_link.start()], "link": False, "href": ""})
+
+                link_text = m_link.group(1)
+                link_href = m_link.group(2).strip()
+                expanded.append({**r, "text": link_text, "link": True, "href": link_href, "code": False})
+
+                pos = m_link.end()
+
+            if pos < len(seg):
+                expanded.append({**r, "text": seg[pos:], "link": False, "href": ""})
+
+        # 2) Autolinks por URL en crudo (http/https), recortando puntuación final.
+        final: List[Dict[str, Any]] = []
+        trailing_punct = ".,;:!?)]}\"'"
+
+        for r in expanded:
+            if r.get("code") or not r.get("text") or r.get("link"):
+                # Si ya es link (p.ej. [texto](destino)), NO re-procesar URLs dentro.
                 final.append(r)
                 continue
-            txt = r["text"]
+
+            txt = str(r["text"])
             pos = 0
-            for m in self._re_url.finditer(txt):
-                if m.start() > pos:
-                    final.append({**r, "text": txt[pos:m.start()], "link": False})
-                final.append({**r, "text": m.group(1), "link": True, "code": False})
-                pos = m.end()
+            for m_url in self._re_url.finditer(txt):
+                if m_url.start() > pos:
+                    final.append({**r, "text": txt[pos:m_url.start()], "link": False, "href": ""})
+
+                raw_url = m_url.group(1)
+
+                # Recortar puntuación final típica pegada a la URL.
+                # Caso especial: ')': solo se recorta si sobran paréntesis de cierre.
+                tail = ""
+                url = raw_url
+                while url and url[-1] in trailing_punct:
+                    last = url[-1]
+                    if last == ")" and url.count("(") >= url.count(")"):
+                        break
+                    tail = last + tail
+                    url = url[:-1]
+
+                if url:
+                    final.append({**r, "text": url, "link": True, "href": url, "code": False})
+
+                if tail:
+                    final.append({**r, "text": tail, "link": False, "href": ""})
+
+                pos = m_url.end()
+
             if pos < len(txt):
-                final.append({**r, "text": txt[pos:], "link": False})
+                final.append({**r, "text": txt[pos:], "link": False, "href": ""})
+
         return final
+
 
 
 # ---------------------------------------------------------------------------
@@ -527,7 +600,13 @@ class HelpViewer:
         self._lines: List[Dict[str, Any]] = []
 
 
-    # ----------- Notify Scroll Limit -----------------
+    
+        # Índice de anclas para navegación interna (headers → #slug)
+        self._anchors: Dict[str, int] = {}
+
+        # Modo depuración: visualiza anclas (F2 para alternar)
+        self._debug_show_anchors: bool = False
+# ----------- Notify Scroll Limit -----------------
     def _notify_scroll_limit(self, where: str) -> None:
         """Lanza el callback de límite de scroll respetando el cooldown configurado."""
         if self.cfg.on_scroll_limit is None:
@@ -652,6 +731,23 @@ class HelpViewer:
 
 
 
+
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            link_href = self._hit_test_link(event.pos)
+            if link_href:
+                if link_href.startswith("http://") or link_href.startswith("https://"):
+                    try:
+                        webbrowser.open(link_href)
+                    except Exception:
+                        pass
+                    return True
+
+                if link_href.startswith("#"):
+                    anchor_id = link_href[1:]
+                    if anchor_id:
+                        if self._jump_to_anchor(anchor_id):
+                            return True
+
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             if self._content_height > self._h:
                 track = self._scrollbar_rect()
@@ -710,6 +806,12 @@ class HelpViewer:
             return True
 
         if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_F2:
+                # Alternar visualización de anclas (modo depuración)
+                print ("TRAZA ", self._debug_show_anchors)
+                self._debug_show_anchors = not self._debug_show_anchors
+                return True
+
             step = int(self.style["hlp_WheelStep"])
             max_scroll = max(0, self._content_height - self._h)
 
@@ -774,6 +876,137 @@ class HelpViewer:
         return font
 
 
+    
+    
+    def _hit_test_link(self, mouse_pos: Tuple[int, int]) -> str:
+        """Devuelve el href del link bajo el ratón o '' si no hay link.
+
+        Parameters
+        ----------
+        mouse_pos:
+            Posición absoluta del ratón (event.pos) en coordenadas de pantalla.
+
+        Returns
+        -------
+        str
+            href detectado o ''.
+        """
+        if not self._rect_abs:
+            return ""
+
+        if not self._lines:
+            return ""
+
+        rect = self._rect_abs
+
+        # Reproducimos los cálculos de layout de draw() para mapear click → línea.
+        base_size = float(self.style.get("hlp_BaseFontSize", 20))
+        scale = float(self.style.get("hlp_FontScale", 1.0))
+        base_unit = base_size * scale
+
+        padding = int(self.style["hlp_Padding"])
+        pad_left = int(self.style.get("hlp_PaddingLeft", 3.0 * base_unit))
+        pad_right = int(self.style.get("hlp_PaddingRight", 5.0 * base_unit))
+
+        x0 = rect.x + pad_left
+        y0 = rect.y + padding
+        x1 = rect.x + rect.width - pad_right
+        max_w = max(0, x1 - x0)
+
+        visible_height = max(0, rect.height - padding * 2)
+        viewport_top = self._scroll
+        viewport_bottom = self._scroll + visible_height
+
+        mx, my = mouse_pos
+
+        # Fuera del área visible → no hay hit.
+        if mx < x0 or mx > x1 or my < rect.y or my > rect.y + rect.height:
+            return ""
+
+        code_mode = str(self.style.get("hlp_CodeBlockMode", "code_block")).lower()
+
+        for ln in self._lines:
+            y = ln.get("y", 0)
+            h = ln.get("h", 0)
+
+            if y + h < viewport_top or y > viewport_bottom:
+                continue
+
+            draw_y = y0 + (y - viewport_top)
+
+            # Visualización de anclas (modo depuración)
+            if ln.get("type") == "anchor":
+                if not self._debug_show_anchors:
+                    continue
+
+                anchor_col = (255,255,120)
+
+                anchor_id = str(ln.get("anchor_id") or "")
+                label = f"<a id=\"{anchor_id}\"></a>"
+                font = self._font_for("body")
+                surf = font.render(label, True, anchor_col)
+                continue
+
+            if my < draw_y or my > draw_y + h:
+                continue
+
+            clicks = ln.get("clicks") or []
+            if not clicks:
+                continue
+
+            extra_indent = 0
+            if code_mode == "code_block" and ln.get("is_code"):
+                extra_indent = int(ln.get("code_block_indent", 0))
+
+            for hit in clicks:
+                rx = int(hit.get("x", 0))
+                rw = int(hit.get("w", 0))
+                href = str(hit.get("href") or "")
+                if not href or rw <= 0:
+                    continue
+
+                hit_rect = pygame.Rect(x0 + extra_indent + rx, draw_y, rw, h)
+                if hit_rect.collidepoint(mx, my):
+                    return href
+
+        return ""
+
+    def _slugify(self, text: str) -> str:
+        """Genera un id estable y simple para enlazar a encabezados.
+
+        Reglas:
+        - Se normalizan tildes/acentos (Descripción → descripcion).
+        - Minúsculas.
+        - Secuencias no alfanuméricas → '-'.
+        - Se recortan guiones en extremos.
+        """
+        raw = text.strip().lower()
+
+        normalized = unicodedata.normalize("NFKD", raw)
+        normalized = "".join(ch for ch in normalized if not unicodedata.combining(ch))
+
+        slug = re.sub(r"[^a-z0-9]+", "-", normalized)
+        slug = re.sub(r"-{2,}", "-", slug)
+        slug = slug.strip("-")
+        return slug
+
+
+    def _jump_to_anchor(self, anchor_id: str) -> bool:
+        """Realiza scroll hasta una ancla registrada.
+
+        Returns
+        -------
+        bool
+            True si la ancla existía y se aplicó el salto.
+        """
+        if anchor_id not in self._anchors:
+            return False
+
+        # Ajuste: respetar el rango de scroll que draw() volverá a clamp.
+        target_y = int(self._anchors[anchor_id])
+        self._scroll = max(0, target_y)
+        return True
+
     def draw(self, surface: pygame.Surface, rect: pygame.Rect) -> None:
         surface.fill(self.kernel_bg, rect)
 
@@ -825,6 +1058,9 @@ class HelpViewer:
         # Si hlp_CodeBlockMode no tiene nada usar modo "code_block"
         code_mode = str(self.style.get("hlp_CodeBlockMode", "code_block")).lower()
 
+
+        '''
+        ###<<<
         for ln in self._lines:
             y = ln["y"]
             if y + ln["h"] < viewport_top or y > viewport_bottom:
@@ -865,6 +1101,73 @@ class HelpViewer:
                 continue
 
             # Dibujo del texto
+            if "runs" not in ln:
+                # Línea especial (p.ej. marcador) sin runs
+                continue
+            ####
+            '''
+
+        for ln in self._lines:
+            y = ln["y"]
+            if y + ln["h"] < viewport_top or y > viewport_bottom:
+                continue
+            draw_y = y0 + (y - viewport_top)
+
+            # Fondo para código, según modo configurado.
+            if code_mode == "code_line":
+                # Modo clásico: fondo por línea, usando todo el ancho disponible.
+                if ln.get("is_code") and ln.get("code_rect"):
+                    cr = ln["code_rect"]
+                    bg_rect = pygame.Rect(x0 + cr.x, draw_y + cr.y, max_w, cr.h)
+                    pygame.draw.rect(
+                        surface,
+                        self.style["hlp_ColorCodeBg"],
+                        bg_rect,
+                        border_radius=4,
+                    )
+            else:
+                # Modo 'block': se dibuja una caja por bloque de código.
+                if ln.get("code_bg"):
+                    indent = int(ln.get("code_bg_indent", 0))
+                    block_width = int(ln.get("code_bg_width", max_w))
+                    # El ancho de la caja no debe sobrepasar el espacio disponible.
+                    block_width = max(0, min(block_width, max_w - indent))
+                    bg_rect = pygame.Rect(x0 + indent, draw_y, block_width, ln["h"])
+                    pygame.draw.rect(
+                        surface,
+                        self.style["hlp_ColorCodeBg"],
+                        bg_rect,
+                        border_radius=4,
+                    )
+
+            # --------------------------------------------------------------
+            # ANCLAS (F2): líneas con type == "anchor"
+            # --------------------------------------------------------------
+            if ln.get("type") == "anchor":
+                if not self._debug_show_anchors:
+                    continue
+
+                anchor_id = ln.get("anchor_id", "")
+                label = f'<a id="{anchor_id}"></a>'
+
+                anchor_col = (255,255,120)
+
+                font = self._font_for("body")
+                surf = font.render(label, True, anchor_col)
+                surface.blit(surf, (x0, draw_y))
+                continue
+
+            if ln.get("hr"):
+                col = self.style["hlp_ColorRule"]
+                pygame.draw.line(surface, col, (x0, draw_y + ln["h"] // 2), (x1, draw_y + ln["h"] // 2), 1)
+                continue
+
+            # Dibujo del texto
+            if "runs" not in ln:
+                # Línea especial (p.ej. marcador) sin runs
+                continue
+
+
             for font_key, color, text, rx in ln["runs"]:
                 if not text:
                     continue
@@ -879,6 +1182,29 @@ class HelpViewer:
                 font = self._font_for(font_key)
                 surf = font.render(text, True, color)
                 surface.blit(surf, (x0 + extra_indent + rx, draw_y))
+
+            # Subrayado de links clicables (zona calculada en _wrap_runs)
+            clicks = ln.get("clicks") or []
+            if clicks:
+                extra_indent = 0
+                if code_mode == "code_block" and ln.get("is_code"):
+                    extra_indent = int(ln.get("code_block_indent", 0))
+
+                underline_y = int(draw_y + ln["h"] - 2)
+                for hit in clicks:
+                    w = int(hit.get("w", 0))
+                    x = int(hit.get("x", 0))
+                    if w <= 0:
+                        continue
+                    x1 = x0 + extra_indent + x
+                    x2 = x1 + w
+                    pygame.draw.line(
+                        surface,
+                        self.style["hlp_ColorLink"],
+                        (x1, underline_y),
+                        (x2, underline_y),
+                        1,
+                    )
 
 
         surface.set_clip(clip_prev)
@@ -1035,6 +1361,7 @@ class HelpViewer:
     # ---------- Composición ----------
     def _compose_all(self) -> None:
         self._lines.clear()
+        self._anchors.clear()
 
         # Padding asimétrico coherente con draw():
         # márgenes laterales en función de hlp_BaseFontSize * hlp_FontScale.
@@ -1068,11 +1395,50 @@ class HelpViewer:
         for blk in self._blocks:
             btype = blk["type"]
 
+            if btype == "anchor":
+                # Registrar ancla explícita (no visible) para links tipo #etiqueta
+                anchor_id = str(blk.get("id") or "").strip()
+                if anchor_id:
+                    self._anchors.setdefault(anchor_id, y)
+                    # Variante en minúsculas para tolerar diferencias de capitalización
+                    anchor_lower = anchor_id.lower()
+                    if anchor_lower and anchor_lower != anchor_id:
+                        self._anchors.setdefault(anchor_lower, y)
+
+                # Guardar marcador de ancla para poder visualizarlo en modo depuración
+                # Altura de línea para el marcador: usar la fuente "body"
+                marker_h = int(self._font_for("body").get_linesize())
+                                # Altura de línea para el marcador: usar la fuente "body"
+                marker_h = int(self._font_for("body").get_linesize())
+                self._lines.append({
+                    "y": y,
+                    "h": marker_h,
+                    "type": "anchor",
+                    "anchor_id": anchor_id,
+                    "runs": [],
+                    "clicks": [],
+                })
+                y += marker_h
+
+                continue
+
+
             if btype in ("h1", "h2", "h3", "h4", "h5", "h6"):
                 size_key = {"h1": "H1", "h2": "H2", "h3": "H3", "h4": "H4", "h5": "H5", "h6": "H6"}[btype]
                 top = {"h1": h1_top, "h2": h2_top, "h3": h3_top, "h4": h4_top, "h5": h5_top, "h6": h6_top}[btype]
                 bot = {"h1": h1_bot, "h2": h2_bot, "h3": h3_bot, "h4": h4_bot, "h5": h5_bot, "h6": h6_bot}[btype]
                 y += top
+
+                # Registrar ancla para navegación interna: '#<slug>'
+                # Además se registra una variante sin prefijo numérico para mejorar coincidencias.
+                slug = self._slugify(blk["text"])
+                if slug:
+                    self._anchors.setdefault(slug, y)
+
+                    slug_wo_num = re.sub(r"^\d+(?:-\d+)*-", "", slug)
+                    if slug_wo_num and slug_wo_num != slug:
+                        self._anchors.setdefault(slug_wo_num, y)
+
                 lines, _ = self._wrap_runs(
                     runs=self.parser.tokenize_inline(blk["text"]),
                     width=width,
@@ -1188,6 +1554,7 @@ class HelpViewer:
                    base_indent: int, prefix: Optional[Tuple[str, int]] = None) -> Tuple[List[Dict[str, Any]], int]:
         lines: List[Dict[str, Any]] = []
         line_runs: List[Tuple[str, RGB, str, int]] = []
+        click_hits: List[Dict[str, Any]] = []
         x = base_indent
         y_height = 0
         total_h = 0
@@ -1197,9 +1564,10 @@ class HelpViewer:
             if not line_runs and total_h == 0:
                 y_height = self._line_height_for(font_role)
             if line_runs or y_height > 0:
-                lines.append({"h": max(y_height, 1), "runs": line_runs[:]})
+                lines.append({"h": max(y_height, 1), "runs": line_runs[:], "clicks": click_hits[:]})
                 total_h += max(y_height, 1)
             line_runs.clear()
+            click_hits.clear()
             x = base_indent
             y_height = 0
 
@@ -1208,23 +1576,28 @@ class HelpViewer:
             font_key = self._font_key_for(font_role, False, False)
             line_runs.append((font_key, self.style["hlp_ColorText"], ptxt, px))
 
-        tokens: List[Tuple[str, str, RGB]] = []
+        tokens: List[Tuple[str, str, RGB, str]] = []
         for r in runs:
             if not r["text"]:
                 continue
             if r.get("code"):
-                font_key = "code"; col = self.style["hlp_ColorCodeText"]
+                font_key = "code"
+                col = self.style["hlp_ColorCodeText"]
+                href = ""
             else:
                 font_key = self._font_key_for(font_role, bool(r.get("bold")), bool(r.get("italic")))
                 col = self.style["hlp_ColorLink"] if r.get("link") else color
-            tokens.append((r["text"], font_key, col))
+                href = str(r.get("href") or "") if r.get("link") else ""
+            tokens.append((r["text"], font_key, col, href))
 
-        for text, font_key, col in tokens:
+        for text, font_key, col, href in tokens:
             parts = self._split_preserving_spaces(text)
             for part in parts:
                 w, h = self._measure_text(part, font_key)
                 if x + w <= width or x == base_indent:
                     line_runs.append((font_key, col, part, x))
+                    if href:
+                        click_hits.append({"x": x, "w": w, "href": href})
                     x += w
                     y_height = max(y_height, h)
                 else:
@@ -1239,6 +1612,8 @@ class HelpViewer:
                                 chunk = leftover[0]
                             cw, ch = self._measure_text(chunk, font_key)
                             line_runs.append((font_key, col, chunk, x))
+                            if href:
+                                click_hits.append({"x": x, "w": cw, "href": href})
                             x += cw
                             y_height = max(y_height, ch)
                             leftover = leftover[len(chunk):]
@@ -1247,6 +1622,8 @@ class HelpViewer:
                         continue
                     flush_line()
                     line_runs.append((font_key, col, part, x))
+                    if href:
+                        click_hits.append({"x": x, "w": w, "href": href})
                     x += w
                     y_height = max(y_height, h)
 
@@ -1593,7 +1970,7 @@ def ShowHelpOverlay(
     *,
     exit_keys: Tuple[int, ...] = (pygame.K_ESCAPE,),
     fps: int = 60,
-    kernel_bg: Tuple[int, int, int] = (222, 222, 222),
+    kernel_bg: Tuple[int, int, int] = (200, 200, 200),
     wheel_step: int = 48,
     scroll_limit_cooldown_ms: int = 300,
 ) -> None:

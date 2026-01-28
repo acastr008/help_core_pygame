@@ -8,7 +8,6 @@
 # Mejoras pendientes a más largo plazo
 
 - Ampliar el parser del sistema de ayuda para detectar y representar
-  - Links con acceso a web. links con acceso a cabeceras y a links con aceso anclas HTML tipo <a id="etiqueta"></a> .
   - Comentarios HTML
   - Tablas sencillas
   - Imágenes
@@ -34,6 +33,12 @@ Layout: lo más complejo (ancho columnas, alto filas, word-wrap por celda).
 Dependencias: opcionalmente podrías apoyarte en una lib de Markdown, pero no lo hemos hecho hasta ahora y eso complica el ecosistema.
 
 # Tareas ya realizadas por orden cronológico
+
+- (27-ene-2025) Amplición de soporte MarkDown para Links con acceso a web. links con acceso a cabeceras y a links con aceso anclas HTML tipo <a id="etiqueta"></a> .
+
+  - Ampliamos el texto de prueba de la de examples/demo_help_standalone.py para poder probar nuevas funcionalidaddes MarkDown.
+  - Ampliación del parser y del visualizador en src/help_core_pygame/help_core.py
+  - Hemos mejorado src/help_core_pygame/__init__.py
 
 - (25-ene-2026) Iniciando cambios para la futura versión v0.1.2
 

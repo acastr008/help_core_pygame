@@ -127,6 +127,172 @@ Permite probar varias opciones de configuración del motor de renderizado, como 
 
 # Test de Markdown reducido — help_core_pygame
 
+## Nuevas ampliaciones
+
+
+Este documento está diseñado para validar, en orden incremental, las ampliaciones:
+1) Links clicables (URLs, [texto](url), y saltos a headers por #slug)
+2) Anclas HTML (<a id="etiqueta"></a>) y links a esas anclas (#etiqueta)
+3) Comentarios HTML (<!-- ... -->) que NO deben renderizarse
+4) Imágenes (![alt](ruta)) con carga desde disco
+
+Sugerencia: prueba con una ventana suficientemente ancha y con scroll.
+(Para salir: **F1**)
+
+---
+
+## 1. Links clicables (web + internos a headers)
+
+Objetivo: validar que se detectan links, se pintan como link y responden al click:
+- `http(s)://...` abre el navegador
+- `#...` hace scroll interno (a headers en esta fase; a anchors HTML en la fase 2)
+
+### 1.1. Autolinks (URL “en crudo”)
+
+1) Link simple:
+https://www.pygame.org/docs/
+
+2) Link con query:
+https://www.google.com/preferences?hl=es
+
+3) Link + fragmento:
+https://docs.python.org/3/library/ast.html#ast.Lambda
+
+4) Link + query + fragmento
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map?utm_source=chatgpt#description
+
+5) Link seguido de puntuación (el punto NO debería formar parte del link):
+https://www.python.org.
+
+6) Link entre paréntesis (el cierre ')' NO debería formar parte del link):
+(https://www.python.org/)
+
+7) Dos links en la misma línea:
+https://www.python.org y también https://translate.google.com/
+
+### 1.2. Links Markdown [texto](destino)
+
+Estos deben ser clicables cuando implementes soporte de `[texto](destino)`:
+
+- Link a web por Markdown:
+[Web de Python](https://www.python.org/)
+
+- Link con query + fragment por Markdown:
+[Ejemplo con fragmento](http://example.com/test?param=1#anchor)
+
+- Link interno a header (por slug):
+[Ir a "2. Listas"](#2-listas)
+[Ir a "3. Código"](#3-codigo)
+
+Nota: si tu slugify elimina números/puntos y acentos, deberían funcionar también:
+[Ir a "Código" (slug simple)](#codigo)
+[Ir a "Listas" (slug simple)](#listas)
+
+### 1.3. Links que NO deben activarse (casos negativos)
+
+- Esto NO es un link: `https://www.python.org/` (dentro de inline code)
+- Esto tampoco:
+```text
+https://www.python.org/  (dentro de bloque code)
+```
+
+---
+
+## 2. HTML anchors (anclas explícitas) + links a #ancla
+
+Objetivo: soportar anclas explícitas y saltar a ellas con `#id`.
+
+A continuación hay anclas HTML. NO deben ocupar espacio visible (no deben renderizar texto).
+
+<a id="ancla_inicio_seccion_2"></a>
+
+Este texto está justo después de la ancla `ancla_inicio_seccion_2`.
+Cuando esté implementado, este link debe saltar aquí:
+[Ir a ancla_inicio_seccion_2](#ancla_inicio_seccion_2)
+
+### 2.1. Ancla antes de un encabezado
+
+<a id="ancla_pre_header"></a>
+#### 2.1.1 Encabezado después de ancla
+
+Este link debe saltar al punto marcado por `ancla_pre_header` (no al header):
+[Ir a ancla_pre_header](#ancla_pre_header)
+
+### 2.2. Ancla en medio del texto
+
+Texto antes de ancla.
+
+<a id="ancla_en_medio"></a>
+
+Texto después de ancla. Este link debe saltar aquí:
+[Ir a ancla_en_medio](#ancla_en_medio)
+
+### 2.3. Caso negativo (ancla inexistente)
+
+Este link NO debería romper nada (ideal: no hace nada):
+[Ir a ancla_inexistente](#ancla_inexistente)
+
+---
+
+## 3. Comentarios HTML
+
+Objetivo: ignorar comentarios HTML `<!-- ... -->`:
+- No deben renderizarse
+- Deben poder aparecer inline y en bloque
+- No deben romper el resto del parseo
+
+### 3.1. Comentario inline
+
+Este texto debe verse. <!-- ESTE COMENTARIO NO DEBE VERSE --> Y este texto también debe verse.
+
+### 3.2. Comentario en bloque (multilínea)
+
+Aquí empieza un bloque que NO debe verse:
+<!--
+Línea 1 oculta
+Línea 2 oculta
+- Viñeta oculta
+## Encabezado oculto
+-->
+
+Aquí termina el bloque oculto. Este texto sí debe verse.
+
+### 3.3. Comentarios cerca de sintaxis Markdown
+
+- Viñeta visible A
+<!-- comentario que no debe romper listas -->
+- Viñeta visible B
+
+---
+
+## 4. Imágenes
+
+Objetivo: soportar imágenes Markdown:
+- Bloque: `![alt](ruta)`
+- Carga desde disco (rutas relativas y/o absolutas, según config)
+- Si falta el fichero: no debe crashear (ideal: muestra placeholder o ignora)
+
+### 4.1. Imagen con ruta relativa (ajusta al layout de tu repo)
+
+Ejemplo (ruta RELATIVA):
+![Logo pygame](examples/assets/pygame_logo.png)
+
+Si ese fichero no existe en tu repo, crea uno o cambia la ruta una sola vez,
+y ya no tendrás que tocar este TEST_MD nunca más.
+
+### 4.2. Imagen con ruta absoluta (opcional)
+
+Ejemplo (ruta ABSOLUTA):
+![Test absoluto](/tmp/help_core_test_image.png)
+
+### 4.3. Imagen inexistente (caso negativo)
+
+Esto NO debe bloquear ni romper el render:
+![No existe](examples/assets/__no_existe__.png)
+
+
+---
+
 Este documento prueba las marcas soportadas en este subconjunto de markdown soportado por help_core_pygame: 
 - Encabezados (H1/H2/H3) 
 - **Megrita**
