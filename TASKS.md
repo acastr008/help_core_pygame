@@ -1,8 +1,9 @@
 # Tareas pendientes
 
-- Implementar ShowHelpOverlay para complementar popups_dialog_gui
+- Pendiente de continuar con el bug de ocultar comentarios.
 - Continuar con form_core_pygame para terminar pasándola a PyPI
 - commit -m 'Iniciando cambios para la futura versión v0.1.2'
+  
       - Primer cambio .....
 
 # Mejoras pendientes a más largo plazo
@@ -34,14 +35,16 @@ Dependencias: opcionalmente podrías apoyarte en una lib de Markdown, pero no lo
 
 # Tareas ya realizadas por orden cronológico
 
+- (28-ene-2026) Se ha refactorizado. help_core.py  help_mini_markdown.py  help_viewer_impl.py  __init__.py
+ 
 - (27-ene-2025) Amplición de soporte MarkDown para Links con acceso a web. links con acceso a cabeceras y a links con aceso anclas HTML tipo <a id="etiqueta"></a> .
-
+  
   - Ampliamos el texto de prueba de la de examples/demo_help_standalone.py para poder probar nuevas funcionalidaddes MarkDown.
   - Ampliación del parser y del visualizador en src/help_core_pygame/help_core.py
   - Hemos mejorado src/help_core_pygame/__init__.py
 
 - (25-ene-2026) Iniciando cambios para la futura versión v0.1.2
-
+  
   - (25-ene) En src/help_core_pygame/help_core.py añado la función de conveniencia  ShowHelpOverlay()   
   - (25-ene) Añado una demo examples/demo_help_show_overlay_circles.py 
   - (24-ene) En .gitignore añado PRIVATE/  

@@ -4,6 +4,7 @@ from .help_core import (
     open_help_standalone,
     ShowHelpOverlay,
     DEFAULT_STYLE,
+    RGB,
 )
 
 __all__ = [
@@ -12,5 +13,6 @@ __all__ = [
     "open_help_standalone",
     "ShowHelpOverlay",
     "DEFAULT_STYLE",
+    "RGB",
 ]
 

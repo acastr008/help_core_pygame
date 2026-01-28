@@ -35,17 +35,9 @@ from dataclasses import dataclass
 from importlib import resources
 from pathlib import Path
 from typing import Optional, Callable
+from help_core_pygame import open_help_standalone
 
 import pygame
-
-try:
-    # API típica de tu librería (ajusta si tu nombre o función cambia)
-    from help_core_pygame import open_help_standalone
-except Exception as exc:  # noqa: BLE001
-    raise SystemExit(
-        "No se pudo importar 'help_core_pygame'. "
-        "Instala el paquete o ejecuta en un entorno donde esté disponible."
-    ) from exc
 
 
 @dataclass
