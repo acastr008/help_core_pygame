@@ -84,33 +84,27 @@ class _MiniMarkdown:
                 i += 1
                 continue
 
-            # Comentario HTML MULTILÍNEA: <!-- ... (puede cerrar en otra línea) -->
-            stripped = line.lstrip()
-            if stripped.startswith("<!--"):
-                # Caso 1 línea: <!-- ... -->
-                m_one = self._re_html_comment.match(line)
-                if m_one:
-                    out.append({"type": "comment", "text": m_one.group(1).strip()})
-                    i += 1
-                    continue
 
-                # Caso multilínea: acumular hasta encontrar '-->'
-                buf: List[str] = []
-                start_idx = line.find("<!--")
-                buf.append(line[start_idx + 4:])  # texto tras '<!--'
+            # Comentarios HTML (simples):
+            #  - 1 línea completa: <!-- ... -->
+            #  - bloque multilínea: línea '<!--' y cierre con línea '-->'
+            m_one = self._re_html_comment.match(line)
+            if m_one:
+                out.append({"type": "comment", "text": m_one.group(1).strip()})
                 i += 1
+                continue
 
-                while i < n:
-                    cur = lines[i]
-                    end_idx = cur.find("-->")
-                    if end_idx != -1:
-                        buf.append(cur[:end_idx])
-                        i += 1
-                        break
-                    buf.append(cur)
+            if line.strip() == "<!--":
+                buf: List[str] = []
+                i += 1
+                while i < n and lines[i].strip() != "-->":
+                    buf.append(lines[i])
                     i += 1
-
-                out.append({"type": "comment", "text": "\n".join(buf).strip()})
+                # Consumir línea de cierre '-->' si existe
+                if i < n and lines[i].strip() == "-->":
+                    i += 1
+                comment_text = "\n".join(buf).strip()
+                out.append({"type": "comment", "text": comment_text})
                 continue
 
 
@@ -118,13 +112,6 @@ class _MiniMarkdown:
             m_anchor = self._re_html_anchor.match(line)
             if m_anchor:
                 out.append({"type": "anchor", "id": m_anchor.group(1)})
-                i += 1
-                continue
-
-            # Comentario HTML: <!-- ... -->
-            m_comment = self._re_html_comment.match(line)
-            if m_comment:
-                out.append({"type": "comment", "text": m_comment.group(1).strip()})
                 i += 1
                 continue
 
@@ -149,6 +136,7 @@ class _MiniMarkdown:
 
 
             # Listas
+
             mul = self._re_ul.match(line)
             mol = self._re_ol.match(line)
             if mul or mol:
@@ -156,6 +144,18 @@ class _MiniMarkdown:
                 items: List[Dict[str, Any]] = []
                 while i < n:
                     cur = lines[i]
+                    # Ignorar comentarios HTML de línea completa dentro de listas (no rompen la lista)
+                    if self._re_html_comment.match(cur):
+                        i += 1
+                        continue
+                    # Ignorar bloque de comentario multilínea dentro de listas
+                    if cur.strip() == "<!--":
+                        i += 1
+                        while i < n and lines[i].strip() != "-->":
+                            i += 1
+                        if i < n and lines[i].strip() == "-->":
+                            i += 1
+                        continue
                     m = (self._re_ul.match(cur) if kind == "ul" else self._re_ol.match(cur))
                     if not m:
                         break
@@ -179,6 +179,7 @@ class _MiniMarkdown:
                   and not self._re_hr.match(lines[i]) and not lines[i].startswith("    ") \
                   and not self._re_ul.match(lines[i]) and not self._re_ol.match(lines[i]) \
                   and not self._re_html_anchor.match(lines[i]) and not self._re_html_comment.match(lines[i]) \
+                  and lines[i].strip() != "<!--" \
                   and not self._re_fence.match(lines[i]):
                 para.append(lines[i])
                 i += 1
@@ -188,6 +189,7 @@ class _MiniMarkdown:
             text_p = "\n".join(para).strip()
             if text_p:
                 out.append({"type": "p", "text": text_p})
+                
 
         # Fence sin cierre al EOF → se considera bloque de código
         if in_fence and fence_buf:

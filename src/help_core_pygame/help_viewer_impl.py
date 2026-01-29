@@ -340,7 +340,6 @@ class HelpViewer:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_F2:
                 # Alternar visualización de anclas (modo depuración)
-                print ("TRAZA ", self._debug_show_anchors)
                 self._debug_show_anchors = not self._debug_show_anchors
                 return True
 
@@ -646,6 +645,8 @@ class HelpViewer:
                     continue
 
                 comment_text = ln.get("comment_text", "")
+                comment_text = comment_text.replace("\n", " || ")
+                
                 label = f"<!--{comment_text}-->"
 
                 comment_col = (255,255,120)

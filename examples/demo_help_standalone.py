@@ -129,7 +129,8 @@ Este documento está diseñado para validar, en orden incremental, las ampliacio
 4) Imágenes (![alt](ruta)) con carga desde disco
 
 Sugerencia: prueba con una ventana suficientemente ancha y con scroll.
-(Para salir: **F1**)
+(Para forzar la visibilidad de elementos ocultos: <F2>)
+(Para salir: <F1>)
 
 ---
 
@@ -233,13 +234,22 @@ Objetivo: ignorar comentarios HTML `<!-- ... -->`:
 - Deben poder aparecer inline y en bloque
 - No deben romper el resto del parseo
 
-### 3.1. Comentario inline
+**La modalidad de comentario recomendada es la del comentario que ocupa completamente una línea.**
+Con otros casos la prioridad ha sido que no afecten negativamente al funcionamiento del visualizador. 
 
-Este texto debe verse. <!-- ESTE COMENTARIO NO DEBE VERSE --> Y este texto también debe verse.
+### 3.1. Comentario inline de linea completa
 
-### 3.2. Comentario en bloque (multilínea)
+ <!-- ESTE COMENTARIO DE LINEA COMPLETA NO DEBE VERSE -->
 
-Aquí empieza un bloque que NO debe verse:
+### 3.2. Comentario inline en medio de una linea
+
+Este texto debe verse. <!-- ESTO NO SE CONSIDERA COMENTARIO POR ESTAR EN MEDIO DE UNA LINEA Y SE VERA COMO TEXTO --> Y este texto también debe verse.
+
+
+### 3.3. Comentario en bloque (multilínea)
+
+Aquí empieza un bloque de varias lineas de comentario que NO debe verse 
+NOTA: En modo de visibilidad forzada con <F2> el comentario multilinea aparece en una sola linea con las partes separadas por ' || '):
 <!--
 Línea 1 oculta
 Línea 2 oculta
@@ -249,12 +259,13 @@ Línea 2 oculta
 
 Aquí termina el bloque oculto. Este texto sí debe verse.
 
-### 3.3. Comentarios cerca de sintaxis Markdown
+### 3.4. Comentarios cerca de sintaxis Markdown
 
 - Viñeta visible A
-<!-- comentario que no debe romper listas -->
+<!-- ESTE COMENTARIO NO SE VERÁ Y NO ROMPERÁ LA LISTA -->
 - Viñeta visible B
 
+NOTA: En modo de visibilidad forzada con <F2> el comentario NO SE VISULIZARÁ. Solo garantizamos que no se rompa la listaa.
 ---
 
 ## 4. Imágenes
