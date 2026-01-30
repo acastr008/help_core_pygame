@@ -216,9 +216,19 @@ except Exception:
 import pygame
 
 
+
 # ---------------------------------------------------------------------------------
 # Función de conveniencia para mostrar ayuda Markdown como overlay modal en Pygame
 # ---------------------------------------------------------------------------------
+# NOTA (ShowHelpOverlay - variante activa):
+# - Esta es la implementación “oficial” en el módulo: al ser la última definición efectiva,
+#   es la que realmente se exporta y ejecutan las demos.
+# - Modal/bloqueante: detiene el loop llamador mientras la ayuda está abierta.
+# - En este proyecto la ventana de ayuda solo cambia por scroll; por tanto no depende de
+#   animaciones ni de update(dt) para refrescarse (redibuja en cada iteración del bucle).
+# - Punto importante: el “salto” de tiempo al volver al loop principal (si el juego usa dt)
+#   NO se resuelve aquí; debe gestionarlo el llamador reseteando su Clock o descartando el
+#   primer dt tras cerrar la ayuda.
 def ShowHelpOverlay(
     display: pygame.Surface,
     md_text: str,
@@ -229,6 +239,7 @@ def ShowHelpOverlay(
     kernel_bg: Tuple[int, int, int] = (200, 200, 200),
     wheel_step: int = 48,
     scroll_limit_cooldown_ms: int = 300,
+    base_dir: Optional[str] = None,
 ) -> None:
     """
     Muestra una ayuda en formato Markdown como overlay modal sobre el display.
@@ -272,6 +283,7 @@ def ShowHelpOverlay(
         kernel_bg=kernel_bg,
         wheel_step=wheel_step,
         scroll_limit_cooldown_ms=scroll_limit_cooldown_ms,
+        base_dir=base_dir,        
     )
 
     viewer = HelpViewer(cfg)
@@ -321,6 +333,7 @@ def open_help_standalone(
     style_variant: Optional[str] = None,
     style_overrides: Optional[Dict[str, Any]] = None,
     fonts_dir: Optional[str] = None,
+    base_dir: Optional[str] = None,
     help_font_file: Optional[str] = None,
     help_code_font_file: Optional[str] = None,
     indent_spaces_per_level: int = 2,
@@ -338,6 +351,7 @@ def open_help_standalone(
         style_variant=style_variant,
         style_overrides=style_overrides,
         fonts_dir=fonts_dir,
+        base_dir=base_dir,
         help_font_file=help_font_file,
         help_code_font_file=help_code_font_file,
         indent_spaces_per_level=indent_spaces_per_level,
@@ -349,7 +363,21 @@ def open_help_standalone(
     )
     HelpViewer(cfg).open_window()
 
-
+'''  
+# ---------------------------------------------------------------------------------
+# Función de conveniencia para mostrar ayuda Markdown como overlay modal en Pygame
+# ---------------------------------------------------------------------------------
+# NOTA (ShowHelpOverlay - variante LEGACY / backup):
+# - Esta variante se conserva comentada solo como referencia/plan B durante un tiempo.
+# - Peculiaridad principal: implementa un overlay “real” sobre el frame congelado:
+#     * captura display.copy() al entrar
+#     * en cada frame restaura el fondo con blit(canvas, ...) antes de dibujar el viewer
+#   Esto evita artefactos si el viewer no repinta toda la superficie o si se desea ver el
+#   estado congelado de la demo bajo la ayuda.
+# - Incluye patrones de robustez típicos (p.ej. try/finally para asegurar on_unmount, y/o
+#   gestión temporal de key repeat si existía), a costa de ser una versión más “envoltorio”.
+# - No aporta mejoras para el “salto temporal” al volver al loop principal: ese ajuste sigue
+#   siendo responsabilidad del llamador.
 def ShowHelpOverlay(
     display: pygame.Surface,
     md_text: str,
@@ -360,6 +388,7 @@ def ShowHelpOverlay(
     kernel_bg: Tuple[int, int, int] = (200, 200, 200),
     wheel_step: int = 48,
     scroll_limit_cooldown_ms: int = 300,
+    base_dir: Optional[str] = None,
 ) -> None:
     cfg = HelpConfig(
         md_text=md_text,
@@ -368,6 +397,7 @@ def ShowHelpOverlay(
         kernel_bg=kernel_bg,
         wheel_step=wheel_step,
         scroll_limit_cooldown_ms=scroll_limit_cooldown_ms,
+        base_dir=base_dir,        
     )
     viewer = HelpViewer(cfg)
     viewer.on_mount(display.get_rect())
@@ -390,4 +420,4 @@ def ShowHelpOverlay(
         pygame.display.flip()
 
     viewer.on_unmount()
-
+'''

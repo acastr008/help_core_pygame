@@ -48,6 +48,10 @@ class _MiniMarkdown:
         self._re_html_anchor = re.compile(r"^\s*<a\s+id=\"([^\"]+)\"\s*>\s*</a>\s*$")
         # Comentarios HTML: <!-- ... --> (una sola línea)
         self._re_html_comment = re.compile(r"^\s*<!--(.*?)-->\s*$")
+        # Imagen Markdown como bloque (línea completa): ![alt](src)
+        # Caso simple: no soporta paréntesis anidados en src.
+        self._re_image_line = re.compile(r"!\[([^\]]*)\]\(([^)]+)\)\s*$")
+
 
     def normalize(self, text: str) -> str:
         return text.replace("\t", " " * self.tab_size).replace("\r\n", "\n").replace("\r", "\n")
@@ -81,6 +85,17 @@ class _MiniMarkdown:
 
             if in_fence:
                 fence_buf.append(line)  # ← dentro del fence, preservamos TODO, incluidas líneas vacías
+                i += 1
+                continue
+
+            # Imagen Markdown como bloque: línea completa ![alt](src)
+            # - No se soporta inline (dentro de párrafos).
+            # - No se soporta en listas (si fuese en lista, line.strip() no empezaría por '![').
+            line_stripped = line.strip()
+            m_img = self._re_image_line.match(line_stripped)
+            # if m_img is not None and line_stripped.startswith("!["):
+            if m_img is not None:
+                out.append({"type": "img", "alt": m_img.group(1).strip(), "src": m_img.group(2).strip()})
                 i += 1
                 continue
 

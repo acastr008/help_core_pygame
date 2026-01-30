@@ -20,6 +20,14 @@ except Exception:
     traceback.print_exc()
     raise
 
+try:
+    from .image_cache import ImageCache
+except Exception:
+    import traceback
+    traceback.print_exc()
+    raise
+
+
 RGB = Tuple[int, int, int]
 
 DEFAULT_STYLE: Dict[str, Any] = {
@@ -66,6 +74,9 @@ class HelpConfig:
     title: str = "Ayuda"
     size: Tuple[int, int] = (800, 480)
 
+    # Base dir opcional para resolver imágenes relativas en Markdown
+    base_dir: Optional[str] = None
+
     # Parser / composición
     tab_size: int = 4
     max_list_nesting: int = 6
@@ -107,6 +118,9 @@ class HelpViewer:
             indent_per_level_spaces=cfg.indent_spaces_per_level
         )
 
+        # Caché de imágenes (Markdown) con resolución por base_dir opcional
+        self._image_cache = ImageCache(cfg.base_dir)
+
         # Estado/layout
         self._rect_abs: Optional[pygame.Rect] = None
         self._w = 0
@@ -136,6 +150,10 @@ class HelpViewer:
 
         # Modo depuración: visualiza anclas (F2 para alternar)
         self._debug_show_anchors: bool = False
+
+        # Modo depuración: visualiza imágenes (F2 para alternar)
+        self._debug_show_image_labels: bool = False
+
 
 
     # ----------- Notify Scroll Limit -----------------
@@ -341,6 +359,10 @@ class HelpViewer:
             if event.key == pygame.K_F2:
                 # Alternar visualización de anclas (modo depuración)
                 self._debug_show_anchors = not self._debug_show_anchors
+
+                # Alternar visualización de imágenes (modo depuración)
+                self._debug_show_image_labels = not self._debug_show_image_labels
+                
                 return True
 
             step = int(self.style["hlp_WheelStep"])
@@ -621,6 +643,58 @@ class HelpViewer:
                         bg_rect,
                         border_radius=4,
                     )
+
+            # --------------------------------------------------------------
+            # IMÁGENES (Markdown): líneas con type == "image" / "image_missing"
+            # --------------------------------------------------------------
+            if ln.get("type") == "image":
+                img = ln.get("surface")
+                if img is not None:
+                    surface.blit(img, (x0, draw_y))
+
+                    # Etiqueta ALT sobreimpresa (solo en modo depuración con F2)
+                    if self._debug_show_image_labels:
+                        alt_text = str(ln.get("alt") or "").strip()
+                        if alt_text:
+                            # Recorte simple para no tapar media imagen
+                            max_chars = 40
+                            if len(alt_text) > max_chars:
+                                alt_text = alt_text[:max_chars - 1] + "…"
+
+                            font = self._font_for("para")
+                            txt_surf = font.render(alt_text, True, (0, 0, 0))
+
+                            pad_x = 6
+                            pad_y = 3
+                            label_w = txt_surf.get_width() + pad_x * 2
+                            label_h = txt_surf.get_height() + pad_y * 2
+
+                            # Fondo blanco semitransparente
+                            bg = pygame.Surface((label_w, label_h), pygame.SRCALPHA)
+                            bg.fill((255, 255, 255, 150))  # alpha 0..255
+
+                            label_x = x0 + 6
+                            label_y = draw_y + 6
+
+                            surface.blit(bg, (label_x, label_y))
+                            surface.blit(txt_surf, (label_x + pad_x, label_y + pad_y))
+
+                continue
+
+            if ln.get("type") == "image_missing":
+                # Placeholder simple: rect + texto
+                ph_rect = pygame.Rect(x0, draw_y, max_w, ln.get("h", self._line_height_for("para")))
+                pygame.draw.rect(surface, (255, 255, 255), ph_rect, border_radius=4)
+                pygame.draw.rect(surface, self.style["hlp_ColorRule"], ph_rect, width=1, border_radius=4)
+
+                src = str(ln.get("src") or "")
+                label = f"[Image missing: {src}]"
+
+                font = self._font_for("para")
+                surf_txt = font.render(label, True, self.style["hlp_ColorMuted"])
+                surface.blit(surf_txt, (x0 + 8, draw_y + 6))
+                continue
+
 
             # --------------------------------------------------------------
             # ANCLAS (F2): líneas con type == "anchor"
@@ -968,6 +1042,38 @@ class HelpViewer:
                     y += L["h"]
                 y += bot
                 continue
+
+            if btype == "img":
+                src = str(blk.get("src") or "")
+                alt = str(blk.get("alt") or "")
+
+                loaded = self._image_cache.get_scaled(src, width)
+                if loaded is not None:
+                    surf_scaled, w_img, h_img = loaded
+                    self._lines.append({
+                        "y": y,
+                        "h": int(h_img),
+                        "type": "image",
+                        "src": src,
+                        "alt": alt,
+                        "surface": surf_scaled,
+                        "w": int(w_img),
+                    })
+                    y += int(h_img)
+                else:
+                    missing_h = 2 * self._line_height_for("para")
+                    self._lines.append({
+                        "y": y,
+                        "h": int(missing_h),
+                        "type": "image_missing",
+                        "src": src,
+                        "alt": alt,
+                    })
+                    y += int(missing_h)
+
+                y += para_sp
+                continue
+
 
             if btype == "p":
                 # Tratamos los '\n' explícitos dentro del texto como saltos de línea

@@ -1,7 +1,11 @@
 # Tareas pendientes
 
-- Pendiente de continuar con el bug de ocultar comentarios.
+- Se ha implementado la ampliación para imágenes, pero no se da por finalizada porque hay que mejorar la demo.
+
+- 
+
 - Continuar con form_core_pygame para terminar pasándola a PyPI
+
 - commit -m 'Iniciando cambios para la futura versión v0.1.2'
   
       - Primer cambio .....
@@ -9,7 +13,6 @@
 # Mejoras pendientes a más largo plazo
 
 - Ampliar el parser del sistema de ayuda para detectar y representar
-  - Comentarios HTML
   - Tablas sencillas
   - Imágenes
 - Programa para visualizar un fichero MarkDown pasado como parámetro.
@@ -35,8 +38,12 @@ Dependencias: opcionalmente podrías apoyarte en una lib de Markdown, pero no lo
 
 # Tareas ya realizadas por orden cronológico
 
+- (30-ene-2026) Ampliación: Soporte para imágenes. Funciona aunque admite pequeños retoques.
+
+- (29-ene-2026 AM) Ampliación: Ahora hay soporte parcial para comentarios HTML dentro del texto MarkDown.
+
 - (28-ene-2026) Se ha refactorizado. help_core.py  help_mini_markdown.py  help_viewer_impl.py  __init__.py
- 
+
 - (27-ene-2025) Amplición de soporte MarkDown para Links con acceso a web. links con acceso a cabeceras y a links con aceso anclas HTML tipo <a id="etiqueta"></a> .
   
   - Ampliamos el texto de prueba de la de examples/demo_help_standalone.py para poder probar nuevas funcionalidaddes MarkDown.

@@ -37,6 +37,7 @@ from pathlib import Path
 from typing import Optional, Callable
 from help_core_pygame import open_help_standalone
 
+import os
 import pygame
 
 
@@ -278,7 +279,19 @@ Objetivo: soportar imágenes Markdown:
 ### 4.1. Imagen con ruta relativa (ajusta al layout de tu repo)
 
 Ejemplo (ruta RELATIVA):
-![Logo pygame](examples/assets/pygame_logo.png)
+![Cara](images/cara.jpg)
+
+![Cara](images/cara.jpg)
+
+![pez payaso con transparencia](images/pez1.png)
+
+![DNA animation](images/batman_mini.png)
+
+![DNA animation](images/batman_negative.png)
+
+![DNA animation](images/batman.png)
+
+![Vara](images/vara.jpg)
 
 Si ese fichero no existe en tu repo, crea uno o cambia la ruta una sola vez,
 y ya no tendrás que tocar este TEST_MD nunca más.
@@ -415,6 +428,8 @@ def main() -> None:
             size=(1200, 900),
             on_scroll_limit=on_scroll_limit,
             scroll_limit_cooldown_ms=300,
+            base_dir=os.path.dirname(__file__),
+            
         )
     finally:
         # Importante: libera recursos temporales (si el paquete requiere extracción).
