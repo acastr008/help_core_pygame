@@ -38,6 +38,12 @@ Dependencias: opcionalmente podrías apoyarte en una lib de Markdown, pero no lo
 
 # Tareas ya realizadas por orden cronológico
 
+- (1-feb-2026)  Varias pequeñas mejoras:
+
+  - Corrección Bug visualizacion barra hr (quedaba corta) y aumento de grosor (de 1 a 3).
+  - Mejorar ExitStack en varias demos.
+  - Reordenación y mejoras en demo_mini_MarkDown_TEST.py
+
 - (30-ene-2026) Ampliación: Soporte para imágenes. Funciona aunque admite pequeños retoques.
 
 - (29-ene-2026 AM) Ampliación: Ahora hay soporte parcial para comentarios HTML dentro del texto MarkDown.

@@ -732,7 +732,7 @@ class HelpViewer:
 
             if ln.get("hr"):
                 col = self.style["hlp_ColorRule"]
-                pygame.draw.line(surface, col, (x0, draw_y + ln["h"] // 2), (x1, draw_y + ln["h"] // 2), 1)
+                pygame.draw.line(surface, col, (x0, draw_y + ln["h"] // 2), (x1, draw_y + ln["h"] // 2), 3)
                 continue
 
             # Dibujo del texto
@@ -769,13 +769,13 @@ class HelpViewer:
                     x = int(hit.get("x", 0))
                     if w <= 0:
                         continue
-                    x1 = x0 + extra_indent + x
-                    x2 = x1 + w
+                    kink_x1 = x0 + extra_indent + x
+                    kink_x2 = kink_x1 + w
                     pygame.draw.line(
                         surface,
                         self.style["hlp_ColorLink"],
-                        (x1, underline_y),
-                        (x2, underline_y),
+                        (kink_x1, underline_y),
+                        (kink_x2, underline_y),
                         1,
                     )
 
