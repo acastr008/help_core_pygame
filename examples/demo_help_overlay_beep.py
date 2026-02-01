@@ -31,7 +31,7 @@ from __future__ import annotations
 
 import sys, os
 from contextlib import ExitStack
-from dataclasses import dataclass
+from dataclasses import dataclass,field
 from importlib import resources
 from pathlib import Path
 from typing import Optional, Callable, Tuple
@@ -101,7 +101,8 @@ class PackageAssetManager:
     Este manager usa ExitStack para mantener vivos esos contextos durante toda la ejecución.
     """
     package_name: str
-    _exit_stack: ExitStack = ExitStack()
+    _exit_stack: ExitStack = field(default_factory=ExitStack)
+
 
     def close(self) -> None:
         """Cierra el ExitStack y libera recursos temporales."""
