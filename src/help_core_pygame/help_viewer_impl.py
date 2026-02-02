@@ -21,6 +21,13 @@ except Exception:
     raise
 
 try:
+    from .table_renderer import render_table
+except Exception:
+    import traceback
+    traceback.print_exc()
+    raise
+
+try:
     from .image_cache import ImageCache
 except Exception:
     import traceback
@@ -695,6 +702,14 @@ class HelpViewer:
                 surface.blit(surf_txt, (x0 + 8, draw_y + 6))
                 continue
 
+            # --------------------------------------------------------------
+            # TABLAS (Markdown): líneas con type == "table"
+            # --------------------------------------------------------------
+            if ln.get("type") == "table":
+                tbl = ln.get("surface")
+                if tbl is not None:
+                    surface.blit(tbl, (x0, draw_y))
+                continue
 
             # --------------------------------------------------------------
             # ANCLAS (F2): líneas con type == "anchor"
@@ -1043,6 +1058,8 @@ class HelpViewer:
                 y += bot
                 continue
 
+
+
             if btype == "img":
                 src = str(blk.get("src") or "")
                 alt = str(blk.get("alt") or "")
@@ -1070,6 +1087,40 @@ class HelpViewer:
                         "alt": alt,
                     })
                     y += int(missing_h)
+
+                y += para_sp
+                continue
+
+
+            if btype == "table":
+                body_font = self._font_for("para")
+                header_font = self._font_for("para_b")
+
+                try:
+                    rendered = render_table(blk, body_font, header_font)
+                    surf_tbl = rendered.surface
+                    h_tbl = int(rendered.height)
+                    w_tbl = int(rendered.width)
+                except Exception:
+                    # Fallback mínimo: superficie con mensaje fijo (sin romper la ejecución)
+                    label = "[Table render error]"
+                    txt = body_font.render(label, True, self.style["hlp_ColorMuted"])
+                    pad_x = 8
+                    pad_y = 6
+                    w_tbl = min(width, txt.get_width() + pad_x * 2)
+                    h_tbl = txt.get_height() + pad_y * 2
+                    surf_tbl = pygame.Surface((max(1, w_tbl), max(1, h_tbl)), pygame.SRCALPHA)
+                    surf_tbl.fill((255, 255, 255, 255))
+                    surf_tbl.blit(txt, (pad_x, pad_y))
+
+                self._lines.append({
+                    "y": y,
+                    "h": int(h_tbl),
+                    "type": "table",
+                    "surface": surf_tbl,
+                    "w": int(w_tbl),
+                })
+                y += int(h_tbl)
 
                 y += para_sp
                 continue

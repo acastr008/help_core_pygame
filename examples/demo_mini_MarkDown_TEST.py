@@ -141,7 +141,8 @@ Sugerencia para la prueba: usar indent_per_level=2 y tab_size=4.
 - [10. Comentarios HTML](#id_Comentarios_HTML)
 - [11. Anclas HTML en línea completa](#id_Anclas_HTML)
 - [12. Imágenes como bloques](#id_Imagenes_bloque)
-- [13. Resumen de funcionalidades de mini_MarkDown (de help_core_pygame)](#id_Resumen_mini_MarkDown)
+- [13. Tablas](#id_tablas)
+- [14. Resumen de funcionalidades de mini_MarkDown (de help_core_pygame)](#id_Resumen_mini_MarkDown)
 
 ---
 
@@ -412,10 +413,44 @@ Esto NO debe bloquear ni romper el render:
 [Volver al índice](#id_INDICE)
 ---
 
-<a id="id_Resumen_mini_MarkDown"></a>
-# 13. Resumen de funcionalidades de mini_MarkDown (de help_core_pygame).
+<a id="id_tablas"></a>
+## 13. Tablas
 
-## Bloques
+Texto antes de tabla pegada (sin línea en blanco adicional). Debe cortar el párrafo y empezar la tabla como bloque.
+| Col A | Col B |
+|------:|:-----:|
+|  123  | hola  |
+
+### Alineación del cuerpo (la cabecera debe verse centrada siempre)
+| Left | Center | Right |
+|:-----|:------:|------:|
+| a    | b      | c     |
+| 11   | 22     | 33    |
+
+### Fila con menos celdas (relleno con '@' dentro de celdas no definidas)
+| A | B | C |
+|---|---|---|
+| 1 | 2 |
+| x |
+
+### Fila con más celdas (truncado + '@' a la derecha de la tabla)
+| A | B |
+|---|---|
+| 1 | 2 | 3 | 4 |
+| x | y | z |
+
+### Caso negativo: cabecera + separador SIN filas (NO debe reconocerse como tabla)
+| A | B |
+|---|---|
+Este bloque debe verse como párrafo normal, no como tabla.
+
+[Volver al índice](#id_INDICE)
+---
+
+<a id="id_Resumen_mini_MarkDown"></a>
+## 14. Resumen de funcionalidades de mini_MarkDown (de help_core_pygame).
+
+### Bloques
 
 - **Encabezados ATX (`#` … `######`)**  
   Genera tipos `h1` … `h6` con el campo `text`.
@@ -453,7 +488,7 @@ Esto NO debe bloquear ni romper el render:
   - Multilínea: empieza con una línea `<!--` y termina en una línea `-->`   ->  tipo `comment` con `text`.
   - Dentro de listas se **ignoran** (no rompen la lista).
 
-## Inline (tokenización dentro de texto)
+### Inline (tokenización dentro de texto)
 
 La función `tokenize_inline()` genera “runs” con estos campos:  
 `text`, `bold`, `italic`, `code`, `link`, `href`.

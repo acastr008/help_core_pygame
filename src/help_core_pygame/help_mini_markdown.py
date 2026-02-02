@@ -3,6 +3,14 @@ from __future__ import annotations
 import re
 from typing import Any, Dict, List
 
+try:
+    # Uso normal dentro del paquete
+    from .md_tables import is_table_start, parse_table
+except Exception:
+    # Fallback si se ejecuta en contexto sin paquete
+    from md_tables import is_table_start, parse_table
+
+
 # ---------------------------------------------------------------------------
 # Parser de Markdown reducido con límites de palabra
 # ---------------------------------------------------------------------------
@@ -187,6 +195,15 @@ class _MiniMarkdown:
                 out.append({"type": kind, "items": items})
                 continue
 
+            # Tabla Markdown como bloque (GFM reducido)
+            # - Se detecta antes del párrafo para evitar que se absorba dentro de texto.
+            if is_table_start(lines, i):
+                res = parse_table(lines, i)
+                if res is not None:
+                    out.append(res.block)
+                    i = res.next_index
+                    continue
+
             # Párrafo
             para = [line]
             i += 1
@@ -196,7 +213,8 @@ class _MiniMarkdown:
                   and not self._re_html_anchor.match(lines[i]) and not self._re_html_comment.match(lines[i]) \
                   and lines[i].strip() != "<!--" \
                   and not self._re_fence.match(lines[i]) \
-                  and not self._re_image_line.match(lines[i].strip()):
+                  and not self._re_image_line.match(lines[i].strip()) \
+                  and not is_table_start(lines, i):
                 para.append(lines[i])
                 i += 1
             # Saltar separadores vacíos entre párrafos
@@ -205,6 +223,7 @@ class _MiniMarkdown:
             text_p = "\n".join(para).strip()
             if text_p:
                 out.append({"type": "p", "text": text_p})
+
 
         # Fence sin cierre al EOF → se considera bloque de código
         if in_fence and fence_buf:
