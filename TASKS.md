@@ -1,8 +1,5 @@
 # Tareas pendientes
 
-- Se ha implementado la ampliación para imágenes, pero no se da por finalizada porque hay que mejorar la demo.
-
-- 
 
 - Continuar con form_core_pygame para terminar pasándola a PyPI
 
@@ -38,8 +35,12 @@ Dependencias: opcionalmente podrías apoyarte en una lib de Markdown, pero no lo
 
 # Tareas ya realizadas por orden cronológico
 
-- (1-feb-2026)  Varias pequeñas mejoras:
+- (2-feb-2026) Se ha completado la demo_mini_MarkDown_TEST.py con la mejora de la sección de imágenes.
 
+  - También se ha corregido un pequeño bug del parser para imágenes. (ya no exige separar un párrajo de una imagen con una línea en blanco)
+
+- (1-feb-2026)  Varias pequeñas mejoras:
+  
   - Corrección Bug visualizacion barra hr (quedaba corta) y aumento de grosor (de 1 a 3).
   - Mejorar ExitStack en varias demos.
   - Reordenación y mejoras en demo_mini_MarkDown_TEST.py

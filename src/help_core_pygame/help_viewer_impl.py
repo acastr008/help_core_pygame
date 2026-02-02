@@ -657,7 +657,7 @@ class HelpViewer:
                         alt_text = str(ln.get("alt") or "").strip()
                         if alt_text:
                             # Recorte simple para no tapar media imagen
-                            max_chars = 40
+                            max_chars = 120
                             if len(alt_text) > max_chars:
                                 alt_text = alt_text[:max_chars - 1] + "…"
 

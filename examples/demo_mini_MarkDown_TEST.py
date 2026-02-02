@@ -35,7 +35,7 @@ from typing import Optional, Callable
 
 from help_core_pygame import open_help_standalone
 
-import os
+import os, sys
 import pygame
 
 
@@ -99,6 +99,21 @@ def load_sound(asset_manager: PackageAssetManager, relative_path: str) -> Option
         print(f"ADVERTENCIA: No se pudo cargar el sonido '{relative_path}': {exc}")
         return None
 
+
+def FileCopy(origen, dir_destino):
+    try:
+        # Forzar que busque el archivo en la carpeta del script
+        base_path = os.path.dirname(os.path.abspath(__file__))
+        ruta_origen = os.path.join(base_path, origen)
+        ruta_destino = os.path.join(dir_destino, os.path.basename(origen))
+
+        with open(ruta_origen, 'rb') as f_src:
+            with open(ruta_destino, 'wb') as f_dst:
+                f_dst.write(f_src.read())
+        return True
+    except Exception as e:
+        print(f"Error: {e}")
+        return False
 
 
 TEST_MD="""
@@ -359,32 +374,39 @@ A continuación hay anclas HTML. Por defecto son invisibles pero pulsando la tec
 ### 1. Imagen con ruta relativa (ajusta al layout de tu repo)
 
 Ejemplo (ruta RELATIVA):
-![Cara](images/cara.jpg)
 
-![Cara](images/cara.jpg)
+Ofrecemos una variedad de pruebas para verificar la visulización de diferentes tipos de ficheros y potenciales fallos de visualización.
+**Pulse <F2>** para poder ver sobreimpreso con semitranparencia el texto alternativo con información de la imagen. 
 
-![pez payaso con transparencia](images/pez1.png)
+![cara.jpg: 768x1024 (JPEG)](images/cara.jpg)
 
-![DNA animation](images/batman_mini.png)
+**NOTA:**
+Las imágenes se tratan como bloques, y no podemos situar dos bloques a la misma altura.
+Lo que podemos usar es el truco de simular varias imágenes usando una sola imagen con fondo transparente.
 
-![DNA animation](images/batman_negative.png)
+![caras.png: 81x800 (PNG con transparencia)](images/caras.png)
 
-![DNA animation](images/batman.png)
+![pez1.png: 168x320 (PNG con transparencia)--(Pez payaso)](images/pez1.png)
 
-![Vara](images/vara.jpg)
+![batman_mini.png: 307x307, (PNG)](images/batman_mini.png)
 
-Si ese fichero no existe en tu repo, crea uno o cambia la ruta una sola vez,
-y ya no tendrás que tocar este TEST_MD nunca más.
+![batman_negative.png: 307x307 (PNG)](images/batman_negative.png)
+
+![SuperStar.gif: 384x256 (GIF)](images/SuperStar.gif)
+
+![DNA_animatio (GIF animado que no se visualizará animado)](images/DNA_animation.gif)
+
 
 ### 2. Imagen con ruta absoluta (opcional)
 
 Ejemplo (ruta ABSOLUTA):
-![Test absoluto](/tmp/help_core_test_image.png)
+![Test ruta absoluta '/tmp/batman_mini.png'](/tmp/batman_mini.png)
 
 ### 3. Imagen inexistente (caso negativo)
 
 Esto NO debe bloquear ni romper el render:
-![No existe](examples/assets/__no_existe__.png)
+
+![fichero inexistente (images/xxxnada.jpg) ](images/nada.jpg)
 
 
 [Volver al índice](#id_INDICE)
@@ -462,6 +484,11 @@ Fin de la ayuda. (Pulse la tecla **<ESC>** para salir)
 
 
 def main() -> None:
+    # Preparamos una copia de una imagen en "/tmp/"
+    if not FileCopy("images/batman_mini.png", "/tmp/"):
+        print("No se pudo copiar el fichero")
+        sys.exit(2)
+
     # Inicialización básica de pygame (audio incluido).
     pygame.init()
     try:
@@ -495,8 +522,7 @@ def main() -> None:
             
         )
     finally:
-        # Importante: libera recursos temporales (si el paquete requiere extracción).
-        asset_manager.close()
+        asset_manager.close() # Liberamos recursos temporales (Importante si el paquete requiere extracción).
         try:
             pygame.quit()
         except Exception:  # noqa: BLE001

@@ -195,7 +195,8 @@ class _MiniMarkdown:
                   and not self._re_ul.match(lines[i]) and not self._re_ol.match(lines[i]) \
                   and not self._re_html_anchor.match(lines[i]) and not self._re_html_comment.match(lines[i]) \
                   and lines[i].strip() != "<!--" \
-                  and not self._re_fence.match(lines[i]):
+                  and not self._re_fence.match(lines[i]) \
+                  and not self._re_image_line.match(lines[i].strip()):
                 para.append(lines[i])
                 i += 1
             # Saltar separadores vacíos entre párrafos
@@ -204,7 +205,6 @@ class _MiniMarkdown:
             text_p = "\n".join(para).strip()
             if text_p:
                 out.append({"type": "p", "text": text_p})
-                
 
         # Fence sin cierre al EOF → se considera bloque de código
         if in_fence and fence_buf:
