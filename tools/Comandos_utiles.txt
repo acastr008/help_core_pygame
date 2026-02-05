@@ -1,0 +1,12 @@
+
+https://github.com/acastr008/form_core_pygame
+https://deepwiki/acastr008/form_core_pygame  ???
+
+
+git ls-files --cached --others --exclude-standard # TODOS LOS FICHEROS DEL PROYECTO
+git ls-files --cached --others --exclude-standard | grep -E '\.py$' # LOS FICHEROS *.py
+git ls-files --cached --others --exclude-standard | grep -E '\.md$' # LOS FICHEROS *.md
+
+# Generar la lista de dependencias mutuas. Generamos un fichero temporal que luego hay que editar.
+git ls-files -co --exclude-standard | grep -E '\.py$' | xargs grep -w 'import' | egrep -v '__future__|^tools/' > /tmp/imports.txt
+

@@ -1,12 +1,16 @@
-from __future__ import annotations
 ########## Copyright (c) ##########################################################
-# SPDX-FileCopyrightText: 2026 Antonio Castro Snurmacher <acastro0841@gmail.com>
+# SPDX-FileCopyrightText: 2025 Antonio Castro Snurmacher <acastro0841@gmail.com>
 # SPDX-License-Identifier: MIT
 ###################################################################################
+from __future__ import annotations
 
 """
-Fichero: demo_help_show_overlay_circles.py
+######################################################################################################################
+Fichero   : demo_help_show_overlay_circles.py
+Versión   : 2.0  (17-dic-2025)
+Licencia de uso MIT
 Descripción Breve: Demo de ShowHelpOverlay() invocable desde una aplicación en marcha (animación con círculos rebotando)
+######################################################################################################################
 """
 
 from dataclasses import dataclass
@@ -14,7 +18,6 @@ from typing import Tuple, List
 
 import pygame
 import random
-
 
 from help_core_pygame import ShowHelpOverlay
 

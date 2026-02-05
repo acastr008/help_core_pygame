@@ -1,5 +1,10 @@
 # Tareas pendientes
 
+- Crear documentación.
+  
+  - Crear docs/OVERVIEW_es.md
+  
+  - Crear docs/API_REFERENC_es.md
 
 - Continuar con form_core_pygame para terminar pasándola a PyPI
 
@@ -35,10 +40,16 @@ Dependencias: opcionalmente podrías apoyarte en una lib de Markdown, pero no lo
 
 # Tareas ya realizadas por orden cronológico
 
+- (5-feb-2026) Visualizador MarkDown + README de ejemplos
+  
+  - Desarrollo de examples/view_markdown_help_core.py para visualizar ficheros MarkDown
+  
+  - Crear examples/README_es.md
+
 - (2-feb-2026 20:00) Se ha implementado la sección de tablas y ha quedado razonamblemente bie. Se ha incuido en la demo demo_mini_MarkDown_TEST.py
 
 - (2-feb-2026) Se ha completado la demo_mini_MarkDown_TEST.py con la mejora de la sección de imágenes.
-
+  
   - También se ha corregido un pequeño bug del parser para imágenes. (ya no exige separar un párrajo de una imagen con una línea en blanco)
 
 - (1-feb-2026)  Varias pequeñas mejoras:
