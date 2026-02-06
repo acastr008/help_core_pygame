@@ -2,43 +2,24 @@
 
 - Crear documentación.
   
-  - Crear docs/OVERVIEW_es.md
   
   - Crear docs/API_REFERENC_es.md
+    - Ilustraciones 
+  - Crear docs/OVERVIEW_es.md
+  - Estandarizar todas la cabeceras de los *.py
+  - Crear un lanzador de demos. 
+  - Adaptar el README.md principal
+    - añadir enlaces a otros documentos
+  - Apartir de documentos *_es.md crear documentos *_en.md por traducción
 
 - Continuar con form_core_pygame para terminar pasándola a PyPI
 
-- commit -m 'Iniciando cambios para la futura versión v0.1.2'
+  - commit -m 'Iniciando cambios para la futura versión v0.1.2'
   
-      - Primer cambio .....
-
-# Mejoras pendientes a más largo plazo
-
-- Ampliar el parser del sistema de ayuda para detectar y representar
-  - Tablas sencillas
-  - Imágenes
-- Programa para visualizar un fichero MarkDown pasado como parámetro.
-
-## Links (web + anchors internos)
-
-Parser: simple.
-Layout: casi nada nuevo.
-Interacción: razonable.
-Dependencias: ninguna extra (solo webbrowser).
-
-## Imágenes (locales)
-
-Parser: sencillo.
-Recursos + caché + escalado: trabajo, pero controlable.
-Dependencias: con Pygame basta si te limitas a formatos básicos.
-
-## Tablas
-
-Parser: bastante más enrevesado.
-Layout: lo más complejo (ancho columnas, alto filas, word-wrap por celda).
-Dependencias: opcionalmente podrías apoyarte en una lib de Markdown, pero no lo hemos hecho hasta ahora y eso complica el ecosistema.
 
 # Tareas ya realizadas por orden cronológico
+
+- (6-feb-2026) Finalizado docs/API_REFERENC_es.md (con índice, con imagen, depurada)
 
 - (5-feb-2026) Visualizador MarkDown + README de ejemplos
   
