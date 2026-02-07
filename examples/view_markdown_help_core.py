@@ -1,19 +1,28 @@
 #!/usr/bin/python3
-########## Copyright (c) ##########################################################
-# SPDX-FileCopyrightText: 2025 Antonio Castro Snurmacher <acastro0841@gmail.com>
-# SPDX-License-Identifier: MIT
-###################################################################################
 from __future__ import annotations
 
-"""
-######################################################################################################################
-Fichero   : view_markdown_help_core.py
-Versión   : 1.0  (5-feb-2026)
-Licencia de uso MIT
-Descripción Breve: Abre un fichero .md y lo visualiza 
-Descripción: Abre un fichero .md y lo visualiza con open_help_standalone, resolviendo rutas relativas desde el directorio del .md.
-######################################################################################################################
-"""
+# ===================================================================================================================
+# Fecha última modificación: (7-feb-2026)  
+# Nombre del archivo : view_markdown_help_core.py
+# Autor              : Antonio Castro Snurmacher 
+# Licencia de uso    : MIT 
+#
+# NOTA: Para ejecutar use el comando: 
+#   python3 view_markdown_help_core.py <nombre_de_fichero.md> (sin lanzador)
+# 
+# Descripción :
+# -------------
+#   Abre un fichero .md y lo visualiza con open_help_standalone, resolviendo rutas relativas 
+#   desde el directorio del .md.
+#   Más que una demo es una aplicación para visualizar ficheros *.md
+#
+# Requisitos:
+# -----------
+#   - Versión Python     : >_3.9 
+#   - Pygame
+#   - Módulo help_core en el PYTHONPATH
+#   - Fichero de sonido: mp3/beep_scroll.mp3
+# ===================================================================================================================
 
 import argparse
 from pathlib import Path
@@ -24,9 +33,9 @@ from help_core_pygame import open_help_standalone
 
 USAGE_EXAMPLES_TEXT = """\
 Ejemplos de uso:
-  python3 examples/view_markdown_help_core.py docs/TUTORIAL.md
-  python3 examples/view_markdown_help_core.py docs/TUTORIAL.md --size 1400x900
-  python3 examples/view_markdown_help_core.py docs/TUTORIAL.md --title "Mi ayuda" --cooldown-ms 250
+  python3 examples/view_markdown_help_core.py docs/OVERVIEW.md
+  python3 examples/view_markdown_help_core.py docs/OVERVIEW.md --size 1400x900
+  python3 examples/view_markdown_help_core.py docs/OVERVIEW.md --title "Mi ayuda" --cooldown-ms 250
 """
 
 

@@ -1,17 +1,27 @@
-########## Copyright (c) ##########################################################
-# SPDX-FileCopyrightText: 2025 Antonio Castro Snurmacher <acastro0841@gmail.com>
-# SPDX-License-Identifier: MIT
-###################################################################################
+#!/usr/bin/python3
 from __future__ import annotations
 
-"""
-######################################################################################################################
-Fichero   : demo_help_show_overlay_circles.py
-Versión   : 2.0  (17-dic-2025)
-Licencia de uso MIT
-Descripción Breve: Demo de ShowHelpOverlay() invocable desde una aplicación en marcha (animación con círculos rebotando)
-######################################################################################################################
-"""
+# ===================================================================================================================
+# Fecha última modificación: (dd-mmm-2026)  
+# Nombre del archivo : demo_help_show_overlay_circles.py
+# Descripción Breve  : Demo de ShowHelpOverlay() invocable desde una aplicación interactiva en marcha.
+# Autor              : Antonio Castro Snurmacher 
+# Licencia de uso    : MIT 
+# 
+# Descripción extendida:
+# ----------------------
+# La demo muestra una animación con círculos rebotando. Permite visualizar una ventana de ayuda 
+# la animación no queda congelada sino que aparece como si hubiera estado funcionando todo el rato.
+# La ayuda de esta demo incluye más información.
+# Es ideal como complemento para cualquier programa de Pygame.
+#
+# Requisitos:
+# -----------
+#   - Versión Python     : >_3.9 
+#   - Pygame
+#   - Módulo help_core en el PYTHONPATH
+#   - Fichero de sonido: mp3/beep_scroll.mp3
+# ===================================================================================================================
 
 from dataclasses import dataclass
 from typing import Tuple, List
@@ -20,7 +30,6 @@ import pygame
 import random
 
 from help_core_pygame import ShowHelpOverlay
-
 
 Color = Tuple[int, int, int]
 

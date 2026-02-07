@@ -124,9 +124,9 @@ Opciones:
 Ejemplos:
 
 ```bash
-python3 examples/view_markdown_help_core.py docs/TUTORIAL.md
-python3 examples/view_markdown_help_core.py docs/TUTORIAL.md --size 1400x900
-python3 examples/view_markdown_help_core.py docs/TUTORIAL.md --title "Mi ayuda" --cooldown-ms 250
+python3 examples/view_markdown_help_core.py docs/OVERVIEW.md
+python3 examples/view_markdown_help_core.py docs/OVERVIEW.md --size 1400x900
+python3 examples/view_markdown_help_core.py docs/OVERVIEW.md --title "Mi ayuda" --cooldown-ms 250
 ```
 
 ---

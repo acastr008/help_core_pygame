@@ -1,23 +1,28 @@
 # Tareas pendientes
 
 - Crear documentación.
+
+- Estandarizar las cabeceras y poner en funcionamiento el lanzador.
+
+- Crear docs/OVERVIEW_es.md
+
+- Estandarizar todas la cabeceras de los *.py
+
+- Crear un lanzador de demos. 
+
+- Adaptar el README.md principal
   
-  
-  - Crear docs/API_REFERENC_es.md
-    - Ilustraciones 
-  - Crear docs/OVERVIEW_es.md
-  - Estandarizar todas la cabeceras de los *.py
-  - Crear un lanzador de demos. 
-  - Adaptar el README.md principal
-    - añadir enlaces a otros documentos
-  - Apartir de documentos *_es.md crear documentos *_en.md por traducción
+  - añadir enlaces a otros documentos
+
+- Apartir de documentos *_es.md crear documentos *_en.md por traducción
 
 - Continuar con form_core_pygame para terminar pasándola a PyPI
-
-  - commit -m 'Iniciando cambios para la futura versión v0.1.2'
   
+  - commit -m 'Iniciando cambios para la futura versión v0.1.2'
 
 # Tareas ya realizadas por orden cronológico
+
+- (7-feb-2026) Creado el lanzador main.py. Hemos modificado las cabeceras de las demos.
 
 - (6-feb-2026) Finalizado docs/API_REFERENC_es.md (con índice, con imagen, depurada)
 

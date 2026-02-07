@@ -1,34 +1,29 @@
-########## Copyright (c) ##########################################################
-# SPDX-FileCopyrightText: 2025 Antonio Castro Snurmacher <acastro0841@gmail.com>
-# SPDX-License-Identifier: MIT
-###################################################################################
-
-"""
-######################################################################################################################
-Programa  : demo_help_standalone.py
-Versión   : 3.0  (31-ene-2026)
-Licencia de uso MIT
-
-Descripción breve:
-    Demo de uso Demo standalone de help_core 
-
-Descripción extendida:
-    Demo de uso standalone de help_core con efecto de sonido al alcanzar los límites 
-    del scroll (top / bottom).
-    Permite visualizar en una pantalla un texto de ayuda en formato markdown. 
-    Carga assets empaquetados mediante importlib.resources.as_file() para obtener
-    una ruta REAL en disco (aunque el paquete esté dentro de un wheel/zip).
-    Incluye un pequeño gestor de assets y una demo de help_core_pygame.
-
-Requisitos:
-    - Python 3.11
-    - Pygame
-    - Módulo help_core en el PYTHONPATH
-    - Fichero de sonido: mp3/beep_scroll.mp3
-######################################################################################################################
-"""
-
+#!/usr/bin/python3
 from __future__ import annotations
+
+# ===================================================================================================================
+# Fecha última modificación: (31-ene-2026)  
+# Nombre del archivo : demo_help_standalone.py
+# Descripción breve  : Demo de uso Demo standalone de help_core
+# Autor              : Antonio Castro Snurmacher 
+# Licencia de uso    : MIT 
+# 
+# Descripción extendida:
+# ----------------------
+#    Demo de uso standalone de help_core con efecto de sonido al alcanzar los límites 
+#    del scroll (top / bottom).
+#    Permite visualizar en una pantalla un texto de ayuda en formato markdown. 
+#    Carga assets empaquetados mediante importlib.resources.as_file() para obtener
+#    una ruta REAL en disco (aunque el paquete esté dentro de un wheel/zip).
+#    Incluye un pequeño gestor de assets y una demo de help_core_pygame.
+#
+# Requisitos:
+# -----------
+#   - Versión Python     : >_3.9 
+#   - Pygame
+#   - Módulo help_core en el PYTHONPATH
+#   - Fichero de sonido: mp3/beep_scroll.mp3
+# ===================================================================================================================
 
 from contextlib import ExitStack
 from dataclasses import dataclass, field

@@ -1,37 +1,32 @@
-########## Copyright (c) ##########################################################
-# SPDX-FileCopyrightText: 2025 Antonio Castro Snurmacher <acastro0841@gmail.com>
-# SPDX-License-Identifier: MIT
-###################################################################################
-
-"""
-######################################################################################################################
-Programa  : demo_mini_MarkDown_TEST.py
-Versión   : 1.0  (31-ene-2026)
-Licencia de uso MIT
-
-Descripción breve:
-    Chequea el soporte del lenguaje mini_MarkDown implementado en help_core_pygame 
-
-Descripción extendida:
-    El texto de la ayuda empieza mostrando la lista de las funcionalidades del lenguaje MarkDown implementadas y
-    pondrá a prueba de una forma bastante exaustiva la implementación de cada una de dicha funcionalidades.
-
-Requisitos:
-    - Python 3.11
-    - Pygame
-    - Módulo help_core en el PYTHONPATH
-    - Fichero de sonido: mp3/beep_scroll.mp3
-######################################################################################################################
-"""
-
+#!/usr/bin/python3
 from __future__ import annotations
+
+# ===================================================================================================================
+# Fecha última modificación: (31-ene-2026)  
+# Nombre del archivo : demo_mini_MarkDown_TEST.py
+# Descripción breve  : Chequea el soporte del lenguaje mini_MarkDown implementado en help_core_pygame 
+# Autor              : Antonio Castro Snurmacher 
+# Licencia de uso    : MIT 
+# 
+# Descripción extendida:
+# ----------------------
+#   El texto de la ayuda empieza mostrando la lista de las funcionalidades del lenguaje MarkDown implementadas y
+#   pondrá a prueba de una forma bastante completa la implementación de cada una de dicha funcionalidades.
+#   Tambien puede servir como referencia para resolver dudas de uso del lenguaje mini_MarkDown.
+#
+# Requisitos:
+# -----------
+#   - Versión Python     : >_3.9 
+#   - Pygame
+#   - Módulo help_core en el PYTHONPATH
+#   - Fichero de sonido: mp3/beep_scroll.mp3
+# ===================================================================================================================
 
 from contextlib import ExitStack
 from dataclasses import dataclass, field
 from importlib import resources
 from pathlib import Path
 from typing import Optional, Callable
-
 
 from help_core_pygame import open_help_standalone
 
