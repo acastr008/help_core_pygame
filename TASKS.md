@@ -2,13 +2,9 @@
 
 - Crear documentación.
 
-- Estandarizar las cabeceras y poner en funcionamiento el lanzador.
-
-- Crear docs/OVERVIEW_es.md
-
 - Estandarizar todas la cabeceras de los *.py
 
-- Crear un lanzador de demos. 
+- 
 
 - Adaptar el README.md principal
   
@@ -21,6 +17,8 @@
   - commit -m 'Iniciando cambios para la futura versión v0.1.2'
 
 # Tareas ya realizadas por orden cronológico
+
+- (8-feb-2026) Creamos los documentos OVERVIEW_es.md y MINIMARKDOWN_GUIDE_es.md
 
 - (7-feb-2026) Creado el lanzador main.py. Hemos modificado las cabeceras de las demos.
 

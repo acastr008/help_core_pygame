@@ -411,16 +411,24 @@ Esto NO debe bloquear ni romper el render:
 <a id="id_tablas"></a>
 ## 13. Tablas
 
-Texto antes de tabla pegada (sin línea en blanco adicional). Debe cortar el párrafo y empezar la tabla como bloque.
+### Compbración de un caso sin linea en blanco de separación.
+
+Texto antes de tabla pegada. El parser debe cortar el párrafo y empezar la tabla como bloque.
 | Col A | Col B |
 |------:|:-----:|
 |  123  | hola  |
 
 ### Alineación del cuerpo (la cabecera debe verse centrada siempre)
-| Left | Center | Right |
-|:-----|:------:|------:|
-| a    | b      | c     |
-| 11   | 22     | 33    |
+
+Por ejemplo una tabla para el historial de pagos de un servicio.
+
+| ID    | Concepto             | Fecha      |    Importe |
+|:------|:---------------------|:-----------|-----------:|
+| A-102 | Suscripción Mensual  | 05/01/2026 |   215,99 € |
+| A-103 | Pack Extensiones     | 12/01/2026 |     4,50 € |
+| B-201 | Renovación Anual     | 01/02/2026 | 10120,00 € |
+| B-205 | Soporte Técnico      | 03/02/2026 |   125,00 € |
+| C-040 | Ajuste de Saldo      | 08/02/2026 |    10,25 € |
 
 ### Fila con menos celdas (relleno con '@' dentro de celdas no definidas)
 | A | B | C |

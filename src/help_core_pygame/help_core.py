@@ -1,23 +1,19 @@
 from __future__ import annotations
-
-# En esta nueva versión número 10 refactorizacion pasar la clase la clase _MiniMarkdown  a help_mini_markdown 
-
-########## Copyright (c) ##########################################################
-# SPDX-FileCopyrightText: 2025 Antonio Castro Snurmacher <acastro0841@gmail.com>
-# SPDX-License-Identifier: MIT
-###################################################################################
+# ===================================================================================================================
+# Fecha última modificación: (4-feb-2026)  
+# Nombre del archivo : help_core.py
+# Autor              : Antonio Castro Snurmacher 
+# Licencia de uso    : MIT 
+# 
+# Requisitos:
+# -----------
+#   - Versión Python     : >_3.9 
+#   - Pygame
+# ===================================================================================================================
 
 """
-######################################################################################################################
-Programa  : help_core.py
-Licencia de uso MIT
-
-Descripción breve:
+Descripción:
     Visor de ayuda independiente, basado únicamente en Pygame, con soporte de Markdown reducido.
-
-Descripción detallada:
-    Permite visualizar en una pantalla un texto de ayuda en formato markdown.
-     - Sin dependencias de PopupDialogWindow ni de tu GUI.
      - Puede abrir su propia ventana (open_window) o renderizar en una surface/rect.
      - Estilos opcionales vía JSON + variant y/o style_overrides.
 
@@ -25,9 +21,6 @@ LIMITACIONES:
     Es un diseño basado en un subconjunto de Markdown. Dicho subconjunto está descrito en help_core_api_uso.md.
     Dicho diseño cubre los elementos más necesarios para poder ofrecer una visualización bien estructurada
     de la información.
-
-Uso:
-    Veasé la documentación: help_core_api_uso.md,  help_core_chuleta_rapida.md,  help_core_doc_actualizado.md
 
 Requisitos:
     - Python 3.11
