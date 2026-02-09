@@ -1,12 +1,8 @@
 # OVERVIEW (help_core_pygame)
 
-Este documento es la **visión general** del proyecto y está pensado para lectura rápida.
-No sustituye a:
+> 🔙 Volver al índice: [INDEX_es.md](INDEX_es.md)
 
-- **API_REFERENCE_es.md** → referencia completa de API (pública y mantenimiento).  
-  Ver: [API_REFERENCE_es.md](API_REFERENCE_es.md)
-- **MINIMARKDOWN_GUIDE_es.md** → guía del lenguaje MiniMarkdown soportado.  
-  Ver: [MINIMARKDOWN_GUIDE_es.md](MINIMARKDOWN_GUIDE_es.md)
+Este documento es la **visión general** del proyecto y está pensado para lectura rápida.
 
 ---
 
@@ -146,4 +142,6 @@ Según la política actual del lanzador:
 - **Cómo probar visualmente**:
   - usa `examples/demo_mini_MarkDown_TEST.py` para validar el render de Markdown,
   - usa las demos de overlay/standalone para validar integración.
+
+> 🔙 Volver al índice: [INDEX_es.md](INDEX_es.md)
 

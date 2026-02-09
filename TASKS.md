@@ -1,16 +1,12 @@
 # Tareas pendientes
 
-- Crear documentación.
+- Repaso final a toda la documentación.
+  - README_es.md y README.md
+  - Crear índice general INDEX_es.md 
+  - Retocar navegación de todos los documentos *_es.md añadiendo enlace al índice general. 
+  - Crear las versiones de toda la documentacion en Inles *_en.md
 
 - Estandarizar todas la cabeceras de los *.py
-
-- 
-
-- Adaptar el README.md principal
-  
-  - añadir enlaces a otros documentos
-
-- Apartir de documentos *_es.md crear documentos *_en.md por traducción
 
 - Continuar con form_core_pygame para terminar pasándola a PyPI
   

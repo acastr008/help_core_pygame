@@ -1,5 +1,7 @@
 # Guía de MiniMarkdown (help_core_pygame)
 
+> 🔙 Volver al índice: [INDEX_es.md](INDEX_es.md)
+
 > **Objetivo**  
 > Este documento describe **exclusivamente** el subconjunto de Markdown (“MiniMarkdown”) que implementa
 > el parser interno `_MiniMarkdown` y que usa el sistema de ayuda de `help_core_pygame`.
@@ -483,3 +485,6 @@ Antes de dar por bueno un texto:
 - [ ] Las tablas tienen cabecera + separador correcto.
 - [ ] Los links internos apuntan a IDs existentes (`#...`).
 - [ ] No hay URLs críticas dentro de `inline code` (no linkearán).
+
+> 🔙 Volver al índice: [INDEX_es.md](INDEX_es.md)
+

@@ -1,91 +1,130 @@
-# help_core_pygame: Independent Markdown Help Viewer (Pygame)
+# 💡 help_core_pygame: Standalone Markdown Help Viewer (Pygame)
 
-![License MIT](https://img.shields.io/badge/License-MIT-green.svg)
+> Spanish version: **[README_es.md](README_es.md)**
 
-[ Spanish README_ES.md is available ](https://github.com/acastr008/help_core_pygame/blob/main/README_ES.md)
+![MIT License](https://img.shields.io/badge/License-MIT-green.svg)
 
+## 🚀 Overview
 
-## Overview
+`help_core_pygame` is a Python library designed to provide a **highly portable and self-contained help viewer** based only on **Pygame**.
 
-`help_core_pygame` is a Python library designed to offer a **highly portable and independent help visualization solution**, based solely on **Pygame**.
+It can render **reduced Markdown** text in a *standalone* window or directly onto any Pygame surface, without relying on heavyweight GUI frameworks.
 
-It allows rendering text with **reduced Markdown formatting** directly in a *standalone* window or on any Pygame surface, without relying on complex GUI libraries.
+### Primary Use Case
 
-### Primary Use
-
-It is the ideal solution for Pygame projects that require a professionally formatted help screen, including lists, code, and styles (bold, italics), with full **scroll functionality** and event handling.
-The help content must be provided in Markdown text format. The Markdown support is not complete but is sufficient to provide attractive and well-structured help.
-
-## Key Features
-
-* **No Complex External Dependencies:** Based solely on Pygame, ensuring maximum portability.
-* **Reduced Markdown Support:** Handles the most essential elements for documentation: headers (`#`), paragraphs, lists (`-`, `1.`), inline code (`` `code` ``), and fenced code blocks (```).
-* **Standalone Mode (Own Window):** Includes the `open_help_standalone` function to open a dedicated window with its own event loop (closes with `ESC` or `QUIT`).
-* **Embedded Mode (Overlay):** Allows integrating the `HelpViewer` onto a `pygame.Surface` and managing its events (`handle_event`) in your own loop.
-* **Advanced Scrolling:** Full support for mouse wheel scrolling, scrollbar dragging (*thumb*), and keys (`PgUp/PgDn`, `Home/End`).
-* **Limit Notification:** Allows defining a *callback* (`on_scroll_limit`) to notify when the scroll reaches the top or bottom limit, with a configurable *cooldown* to prevent bouncing (ideal for playing limit sounds, like `beep_scroll.mp3`).
+Ideal for Pygame projects that need a professionally formatted help screen (headings, lists, code, basic styling), with full **scroll** support and event handling.  
+Help content is provided as Markdown text. Markdown support is intentionally limited but sufficient for structured, good-looking help screens.
 
 ---
 
-## Installation
+## 📚 Documentation
 
-The package is available on PyPI (using the project name `help_core_pygame`):
+**Index of the complete project documentation**: [docs/INDEX_en.md](docs/INDEX_en.md)
+
+---
+
+## 🧭 Examples launcher (main.py)
+
+A launcher is provided in the project root to run the scripts under `examples/`.
+
+### Run
 
 ```bash
-pip install help-core-pygame
-Requirement: You need to have pygame installed in your environment.
+python3 main.py
 ```
 
-# Quick Usage Example (Standalone Mode)
-The following example shows how to launch the help viewer in its own window and how to configure the scroll limit callback with a sound.
+### Which scripts are listed
 
-```Python
+The launcher only lists scripts that match:
 
+1) **Extension**: must end with `.py`  
+2) **Path**: the relative path must start with one of the prefixes in `PATH_INCLUDE` (a list defined in `main.py`)  
+3) **Header**: the script must contain a `Descripción breve:` line in its header
+
+This makes it possible to keep helper scripts in `examples/` without listing them as demos.
+
+---
+
+## ✨ Highlights
+
+- **No heavy dependencies**: only Pygame.
+- **Reduced Markdown support**: headings (`#`), paragraphs, lists (`-`, `1.`), inline code (`` `code` ``) and fenced code blocks (```).
+- **Standalone mode**: `open_help_standalone` opens a dedicated window with its own event loop.
+- **Embedded mode**: integrate `HelpViewer` into your own screen/surface and handle events via `handle_event`.
+- **Smooth scrolling**: mouse wheel and keyboard support (implementation details may vary by demo/style).
+- **Scroll limit callback**: `on_scroll_limit` can be used to trigger feedback (e.g., a sound) when reaching top/bottom.
+
+---
+
+## 📦 Installation
+
+### Option A) Install from PyPI (pending)
+
+> **Note:** this version is not published on PyPI yet.  
+> Once published, this section will include the final `pip install ...` command.
+
+### Option B) Install from the repository (recommended for now)
+
+Clone the repository and install in editable mode:
+
+```bash
+python3 -m venv .venv
+. .venv/bin/activate
+pip install -U pip
+pip install -e .
+```
+
+You need `pygame` (it will be installed via declared dependencies if available, or install it manually if your environment requires it).
+
+---
+
+# 1) Standalone usage example
+
+A complete demo is available at `examples/demo_help_standalone.py`.  
+Below is a minimal standalone usage example:
+
+```python
 import pygame
-# IMPORTANT! The module name to import is help_core_pygame.
-from help_core_pygame import open_help_standalone 
+from help_core_pygame import open_help_standalone
 
-# Initialize Pygame (essential to use the viewer)
 pygame.init()
 
-# 1. Read the Markdown content
 try:
     MD_TEXT = open("my_help.md", encoding="utf-8").read()
 except FileNotFoundError:
     MD_TEXT = "# Error\nHelp file not found."
 
-# 2. Prepare the sound for the scroll limit
 try:
-    # Adjust this path to where you have the asset in your project.
-    # The 'beep_scroll.mp3' file must be in an accessible path.
-    beep_sound = pygame.mixer.Sound("beep_scroll.mp3") 
+    beep_sound = pygame.mixer.Sound("beep_scroll.mp3")
 except pygame.error:
-    print("Warning: Could not load sound file 'beep_scroll.mp3'.")
+    print("Warning: could not load 'beep_scroll.mp3'.")
     beep_sound = None
 
-# 3. Define the limit callback
+
 def beep_on_limit(where: str) -> None:
-    """Function called when the scroll limit is reached (top/bottom)."""
+    """Called when the scroll limit is reached (top/bottom)."""
     print(f"Scroll limit reached: {where}")
     if beep_sound is not None:
         beep_sound.play()
 
-# 4. Call the standalone function
+
 open_help_standalone(
     md_text=MD_TEXT,
-    title="My Application Help",
+    title="My App Help",
     size=(1200, 900),
     wheel_step=48,
-    kernel_bg=(222, 222, 222),  # Light gray background
+    kernel_bg=(222, 222, 222),
     on_scroll_limit=beep_on_limit,
-    scroll_limit_cooldown_ms=300, # 300 ms anti-bounce
+    scroll_limit_cooldown_ms=300,
 )
 
-# Quit Pygame upon completion
 pygame.quit()
-The file examples/demo_help_standalone.py contains a complete demo of this mode.
 ```
 
-# 2) Usage Example for Embedded Mode (Overlay Mode)
-A demo is provided in examples/demo_help_overlay_beep.py. Help is activated by pressing F1 and is displayed in the program's main window. It uses the embedded mode of HelpViewer (not open_help_standalone). When exiting the help, the screen content is recovered, and drawing can continue.
+# 2) Overlay example (in your main window)
 
+A complete demo is provided at `examples/demo_help_overlay_beep.py`.
+
+In this mode the help viewer is displayed on top of your main window (overlay/modal). When you exit the help screen, your game continues normally.
+
+> For a map of examples and what each one validates, see: [docs/OVERVIEW_es.md](docs/OVERVIEW_es.md)

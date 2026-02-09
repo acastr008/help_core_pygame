@@ -1,5 +1,7 @@
 # API_REFERENCE_es — help_core_pygame
 
+> 🔙 Volver al índice: [INDEX_es.md](INDEX_es.md)
+
 > Referencia unificada de la API del proyecto.
 >
 > Este documento se divide en dos partes:
@@ -1900,4 +1902,5 @@ Errores atrapados: ValueError, pygame.error.
 - docs/ARCHITECTURE_es.md: visión global del pipeline.
 
 ---
+> 🔙 Volver al índice: [INDEX_es.md](INDEX_es.md)
 
