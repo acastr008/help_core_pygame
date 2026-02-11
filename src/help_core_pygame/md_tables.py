@@ -1,10 +1,27 @@
-"""
-Fecha: 02/feb/2026 y hora 10:05
-Archivo: md_tables.py
-Descripción breve: Parser modular de tablas tipo GFM (subconjunto) para mini_MarkDown.
-"""
-
 from __future__ import annotations
+
+# ====================================================================================================
+# Proyecto : help_core_pygame
+# Archivo  : md_tables.py
+# Autor    : Antonio Castro Snurmacher 
+# Licencia : MIT 
+#
+# Fecha última modificación: (4-feb-2026) 
+#
+# Descripción:
+# ------------
+#   Parser modular de tablas tipo GFM (subconjunto) para mini_MarkDown.
+#   Será utilizado desde el parser principal (help_mini_markdown.py) 
+#
+# Requisitos:
+# -----------
+#   - Versión Python     : >_3.9 
+#   - Pygame
+#
+# Documentación en español: https://github.com/acastr008/help_core_pygame/blob/main/docs/INDEX_es.md 
+# Documentation in English: https://github.com/acastr008/help_core_pygame/blob/main/docs/INDEX_en.md 
+# ====================================================================================================
+
 
 import re
 from dataclasses import dataclass

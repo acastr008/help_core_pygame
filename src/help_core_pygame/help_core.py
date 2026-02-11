@@ -1,189 +1,29 @@
 from __future__ import annotations
-# ===================================================================================================================
-# Fecha última modificación: (4-feb-2026)  
-# Nombre del archivo : help_core.py
-# Autor              : Antonio Castro Snurmacher 
-# Licencia de uso    : MIT 
-# 
+
+# ====================================================================================================
+# Proyecto : help_core_pygame
+# Archivo  : help_core.py
+# Autor    : Antonio Castro Snurmacher 
+# Licencia : MIT 
+#
+# Fecha última modificación: (4-feb-2026) 
+#
+# Descripción:
+# ------------
+#   Visor de ayuda independiente, basado únicamente en Pygame, con soporte de Markdown reducido.
+#     - Puede abrir su propia ventana (open_window) o renderizar en una surface/rect.
+#     - Estilos opcionales vía JSON + variant y/o style_overrides.
+#
 # Requisitos:
 # -----------
 #   - Versión Python     : >_3.9 
 #   - Pygame
-# ===================================================================================================================
-
-"""
-Descripción:
-    Visor de ayuda independiente, basado únicamente en Pygame, con soporte de Markdown reducido.
-     - Puede abrir su propia ventana (open_window) o renderizar en una surface/rect.
-     - Estilos opcionales vía JSON + variant y/o style_overrides.
-
-LIMITACIONES:
-    Es un diseño basado en un subconjunto de Markdown. Dicho subconjunto está descrito en help_core_api_uso.md.
-    Dicho diseño cubre los elementos más necesarios para poder ofrecer una visualización bien estructurada
-    de la información.
-
-Requisitos:
-    - Python 3.11
-    - Pygame
-######################################################################################################################
-"""
-
-"""
------------------------------------------------------------------------------
-_MiniMarkdown – Lenguaje soportado (Markdown reducido)
------------------------------------------------------------------------------
-Configuración:
-  - tab_size (int): nº de espacios que sustituye a cada tabulador en normalize().
-  - max_list_nesting (int): profundidad máxima de indentación para listas.
-      *Internamente los niveles van de 0 a (max_list_nesting - 1).*
-  - indent_per_level_spaces (int): nº de espacios que equivalen a 1 nivel de
-      indentación para listas (PARSEO, no px en render).
 #
-Normalización:
-  - normalize(text):
-      · Reemplaza '\\t' por ' ' * tab_size.
-      · Convierte CRLF/CR a LF.
-    (parse() NO llama a normalize() automáticamente; úsala si necesitas unificar saltos/tabs.)
-#
-BLOQUES SOPORTADOS
-------------------
-1) Regla horizontal
-   Sintaxis: una línea que contenga exactamente tres guiones (con o sin espacios alrededor)
-      --- 
-   Regex: r'^\\s*---\\s*$'
-   Emite: {"type": "hr"}
-#
-2) Encabezados (h1..h6)
-   Sintaxis: '# ' | '## ' | ... | '###### ' seguido del texto del título
-      # Título 1
-      ## Título 2
-      ...
-      ###### Título 6
-   Regex: r'^(#{1,6})\\s+(.*)$'
-   Emite: {"type": "h1"|...|"h6", "text": "..."}
-#
-3) Bloques de código "fence"
-   Sintaxis: líneas con ``` para abrir/cerrar. No se detecta lenguaje.
-      ```
-      cualquier texto (se preserva tal cual, incluidas líneas vacías)
-      ```
-   Regex apertura/cierre: r'^\\s*```.*$'
-   Emite: {"type": "code", "text": "<contenido tal cual>"}
-   Nota: si el EOF llega con fence abierto, también se emite como bloque de código.
-#
-4) Bloques de código indentado  (DESACTIVADO EN ESTA IMPLEMENTACIÓN)
-   En esta implementación se ha desactivado la detección automática de
-   "bloques de código indentado" (líneas que comienzan con 4 espacios)
-   porque:
-
-     - pandoc genera listas con líneas de continuación sangradas con
-       cuatro espacios (no son bloques de código reales).
-     - Eso producía parches blancos indeseados en la ayuda al tratar
-       esas líneas de continuación como código.
-
-   Recomendación: generar el manual con pandoc usando fences ``` para
-   los bloques de código reales y evitar confiar en indentaciones para
-   indicar código.
-
-   En consecuencia, actualmente no se emiten bloques de tipo "code"
-   basados en indentación; los bloques de código se obtienen sólo a
-   partir de fences ``` (ver sección 3).
-#
-5) Listas
-   • Listas no ordenadas (UL):
-        - Item uno
-        * Item dos
-      Regex: r'^(\\s*)([-*])\\s+(.*)$'
-      Emite: {"type": "ul", "items": [{"level": L, "text": "..."} ...]}
-#
-   • Listas ordenadas (OL):
-        1. Primer item
-        2. Segundo item
-      Regex: r'^(\\s*)(\\d+)\\.\\s+(.*)$'
-      Emite: {"type": "ol", "items": [{"level": L, "num": N, "text": "..."} ...]}
-#
-   Nivel de indentación en ambos casos:
-      L = min( len(espacios_previos) // indent_per_level_spaces,
-               max_list_nesting - 1 )
-     (No se parsean subpárrafos dentro de items; solo se acumulan líneas consecutivas
-      que sigan siendo del mismo tipo de lista. No hay checkboxes, blockquotes ni imágenes.)
-#
-6) Párrafos
-   Cualquier bloque de líneas consecutivas que no encaje en las reglas anteriores,
-   separado por líneas en blanco. Se emite con saltos '\\n' internos si los hay.
-   Emite: {"type": "p", "text": "..."}
-#
-ORDEN DE DETECCIÓN DE BLOQUES en parse():
-  1) Saltos de línea vacíos (se ignoran entre bloques, excepto dentro de fence)
-  2) Fence ```
-  3) (Si in_fence) → acumular literal
-  4) Regla horizontal (---)
-  5) Encabezados (#..######)
-  6) Código indentado (≥4 espacios)
-  7) Listas (UL/OL)
-  8) Párrafo
-#
-INLINE (tokenize_inline)
-------------------------
-1) Código en línea
-   Sintaxis: `contenido`
-   Regex: r'`([^`]+)`'
-   Comportamiento:
-     - Se "protege" primero: el contenido de `...` NO se procesa para negrita/itálica/links.
-   Emite runs con: {"text": "...", code: True, bold: False, italic: False, link: False}
-#
-2) Énfasis
-   • Negrita+itálica: ***texto***
-      Regex: r'(?<!\\w)\\*\\*\\*(.+?)\\*\\*\\*(?!\\w)'
-   • Negrita: **texto**
-      Regex: r'(?<!\\w)\\*\\*(.+?)\\*\\*(?!\\w)'
-   • Itálica: *texto*
-      Regex: r'(?<!\\w)\\*(.+?)\\*(?!\\w)'
-#
-   Notas importantes:
-     - Se aplican en este orden: *** → ** → *
-     - Se exigen límites de “no-palabra” en ambos lados (negative lookbehind/ahead con \\w):
-         · 'precio*2' NO activa itálica
-         · '**negrita**,' SÍ (la coma no rompe el match)
-     - Flags resultantes por run:
-         · bold = True si (b OR bi)
-         · italic = True si (i OR bi)
-#
-3) URLs
-   Sintaxis: http://... o https://... (sin corchetes)
-   Regex: r'(https?://\\S+)'
-   Comportamiento:
-     - Se marcan como link=True (y code=False).
-     - Dentro de `code` NO se linka.
-     - Nota: \\S+ captura hasta el siguiente espacio; si hay puntuación pegada
-             al final (p. ej. una coma), se incluirá en el enlace.
-#
-Salida de tokenize_inline(text) → List[run]
-   Cada run es un dict con claves:
-     { "text": str, "bold": bool, "italic": bool, "code": bool, "link": bool }
-#
-LIMITACIONES/Diseño intencionado:
-  - Títulos solo h1..h6.
-  - No hay blockquotes, imágenes, tablas, ni enlaces estilo [texto](url).
-  - Items de lista: solo texto plano por línea; no hay subbloques dentro del item.
-  - El análisis inline no se realiza dentro de bloques de código (fence o indentado).
-  - Los "límites de palabra" para * ** *** evitan falsos positivos dentro de tokens alfanuméricos.
------------------------------------------------------------------------------
-
-"""
+# Documentación en español: https://github.com/acastr008/help_core_pygame/blob/main/docs/INDEX_es.md 
+# Documentation in English: https://github.com/acastr008/help_core_pygame/blob/main/docs/INDEX_en.md 
+# ====================================================================================================
 
 
-"""NOTA1:
-La instrucción from __future__ import annotations en Python 3.12 sirve para habilitar la evaluación diferida de las 
-anotaciones de tipo. Esto significa que, en lugar de evaluar las anotaciones en el momento en que se define una 
-función o clase, se evalúan como cadenas de texto (strings). Esta característica es útil para evitar problemas con 
-referencias circulares y para permitir que las anotaciones hagan referencia a nombres que aún no se han definido
-
-NOTA2:
-Se puede generar un fichero con LibreOffice y pasarlo a formato markdown luego con:
-    pandoc archivo.odt -t markdown -o archivo.md
-"""
-# Programa  : help_core.py
 import os
 import re
 import json

@@ -1,18 +1,19 @@
 # Tareas pendientes
 
-- Repaso final a toda la documentación.
+- () Se han estandarizado las cabeceras de las librerías help_core_pygame/src/*.py
+
+- Continuar con form_core_pygame para terminar pasándola a PyPI
+
+- - commit -m 'Iniciando cambios para la futura versión v0.1.2'
+
+# Tareas ya realizadas por orden cronológico
+
+- (9-feb-2026) Repaso final a toda la documentación.
+  
   - README_es.md y README.md
   - Crear índice general INDEX_es.md 
   - Retocar navegación de todos los documentos *_es.md añadiendo enlace al índice general. 
   - Crear las versiones de toda la documentacion en Inles *_en.md
-
-- Estandarizar todas la cabeceras de los *.py
-
-- Continuar con form_core_pygame para terminar pasándola a PyPI
-  
-  - commit -m 'Iniciando cambios para la futura versión v0.1.2'
-
-# Tareas ya realizadas por orden cronológico
 
 - (8-feb-2026) Creamos los documentos OVERVIEW_es.md y MINIMARKDOWN_GUIDE_es.md
 

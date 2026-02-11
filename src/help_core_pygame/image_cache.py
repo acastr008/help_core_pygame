@@ -1,11 +1,27 @@
 from __future__ import annotations
 
-"""
-Programa asistido por ChatGPT en fecha 29/ene/2026 y hora 00:00
-Titulo: ImageCache para help_core_pygame
-Descripción: Resuelve rutas (base_dir), carga imágenes con pygame, escala al ancho objetivo
-             y mantiene caché por (abs_path, target_width). Devuelve (surface, w, h) o None.
-"""
+# ====================================================================================================
+# Proyecto : help_core_pygame
+# Archivo  : image_cache.py
+# Autor    : Antonio Castro Snurmacher 
+# Licencia : MIT 
+#
+# Fecha última modificación: (4-feb-2026) 
+#
+# Descripción:
+# ------------
+#   Resuelve rutas (base_dir), carga imágenes con pygame, escala al ancho objetivo
+#   y mantiene caché por (abs_path, target_width). Devuelve (surface, w, h) o None.
+#   Será utilizada desde el visor (help_viewer_impl.py)
+#
+# Requisitos:
+# -----------
+#   - Versión Python     : >_3.9 
+#   - Pygame
+#
+# Documentación en español: https://github.com/acastr008/help_core_pygame/blob/main/docs/INDEX_es.md 
+# Documentation in English: https://github.com/acastr008/help_core_pygame/blob/main/docs/INDEX_en.md 
+# ====================================================================================================
 
 
 from dataclasses import dataclass

@@ -1,5 +1,30 @@
 from __future__ import annotations
 
+# ====================================================================================================
+# Proyecto : help_core_pygame
+# Archivo  : help_viewer_impl.py
+# Autor    : Antonio Castro Snurmacher 
+# Licencia : MIT 
+#
+# Fecha última modificación: (4-feb-2026) 
+#
+# Descripción:
+# ------------
+#   El módulo help_viewer_impl.py implementa el visor principal de help_core_pygame: A partir de un texto 
+#   MiniMarkdown ya parseado, dibuja en una Surface de Pygame la representación del texto con el formato
+#   correspondiente.
+#
+# Requisitos:
+# -----------
+#   - Versión Python     : >_3.9 
+#   - Pygame
+#
+# Documentación en español: https://github.com/acastr008/help_core_pygame/blob/main/docs/INDEX_es.md 
+# Documentation in English: https://github.com/acastr008/help_core_pygame/blob/main/docs/INDEX_en.md 
+# ====================================================================================================
+
+
+
 # src/help_core_pygame/help_viewer_impl.py
 
 import json

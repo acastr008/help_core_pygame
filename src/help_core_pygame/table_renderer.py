@@ -1,11 +1,27 @@
-#!/usr/bin/python3
-"""
-Fecha: 02/feb/2026 y hora 10:20
-Archivo: table_renderer.py
-Descripción breve: Renderiza un bloque de tabla (subconjunto GFM) a un pygame.Surface con estilo fijo.
-"""
-
 from __future__ import annotations
+
+# ====================================================================================================
+# Proyecto : help_core_pygame
+# Archivo  : table_render.py
+# Autor    : Antonio Castro Snurmacher 
+# Licencia : MIT 
+#
+# Fecha última modificación: (4-feb-2026) 
+#
+# Descripción:
+# ------------
+#   Renderiza un bloque de tabla previamente parseada (subconjunto GFM) a un pygame.Surface con estilo fijo.
+#   Será utilizada desde el visor (help_viewer_impl.py)
+#
+# Requisitos:
+# -----------
+#   - Versión Python     : >_3.9 
+#   - Pygame
+#
+# Documentación en español: https://github.com/acastr008/help_core_pygame/blob/main/docs/INDEX_es.md 
+# Documentation in English: https://github.com/acastr008/help_core_pygame/blob/main/docs/INDEX_en.md 
+# ====================================================================================================
+
 
 from dataclasses import dataclass
 from typing import Any, Dict, List, Sequence, Tuple

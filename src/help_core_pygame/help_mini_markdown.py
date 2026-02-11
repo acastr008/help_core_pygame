@@ -1,5 +1,32 @@
 from __future__ import annotations
 
+# ====================================================================================================
+# Proyecto : help_core_pygame
+# Archivo  : help_mini_markdown.py
+# Autor    : Antonio Castro Snurmacher 
+# Licencia : MIT 
+#
+# Fecha última modificación: (4-feb-2026) 
+#
+# Descripción:
+# ------------
+#   El módulo help_mini_markdown.py implementa el parser MiniMarkdown de help_core_pygame.
+#   A partir de un texto, lo normaliza y lo convierte en una lista de bloques (títulos, párrafos, listas, código,
+#   tablas, imágenes, anclas y comentarios), y tokeniza el formato inline (negrita, itálica, código y enlaces).
+#   Tras esta tarea, todo queda listo para entregar al visualizador (help_viewer_impl.py) toda la información
+#   necesaria para poder visualizar el texto con el formato adecuado.
+#
+# Requisitos:
+# -----------
+#   - Versión Python     : >_3.9 
+#   - Pygame
+#
+# Documentación en español: https://github.com/acastr008/help_core_pygame/blob/main/docs/INDEX_es.md 
+# Documentation in English: https://github.com/acastr008/help_core_pygame/blob/main/docs/INDEX_en.md 
+# ====================================================================================================
+
+
+
 import re
 from typing import Any, Dict, List
 
