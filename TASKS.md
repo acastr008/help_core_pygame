@@ -1,6 +1,5 @@
 # Tareas pendientes
 
-- () Se han estandarizado las cabeceras de las librerías help_core_pygame/src/*.py
 
 - Continuar con form_core_pygame para terminar pasándola a PyPI
 
@@ -14,6 +13,10 @@
   - Crear índice general INDEX_es.md 
   - Retocar navegación de todos los documentos *_es.md añadiendo enlace al índice general. 
   - Crear las versiones de toda la documentacion en Inles *_en.md
+
+- (13-feb-2026) Se ha revisado cuidadosamente API_REFERENCE_(en/es).md corrigiendo inconsistencias y anclas/enlaces
+
+- (10-feb-2026) Se han estandarizado las cabeceras de las librerías help_core_pygame/src/*.py
 
 - (8-feb-2026) Creamos los documentos OVERVIEW_es.md y MINIMARKDOWN_GUIDE_es.md
 

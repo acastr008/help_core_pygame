@@ -13,7 +13,7 @@
 - The **public API** is the part of the API considered more stable and easier to use, oriented to the end user. Ideal to add a solid help system to a Pygame game.
 - The **maintenance API** is a much broader part of the API and may change more frequently; it is documented to facilitate maintenance and the addition of improvements and extensions, as well as to debug errors or deficiencies in the code.
 
-![Public API vs Maintenance API](APIs_public_vs_mantenim.png)
+![Public API vs Maintenance API](APIs_pubica_vs_mantenim.png)
 
 ## Requirements and compatibility
 
@@ -24,120 +24,120 @@
 ---
 
 ## Table of contents
-- [Part I — Public API (end user)](#part-i-public-api-end-user)
-  - [API for module help_core.py (EN)](#api-for-module-help_core-py)
-    - [Part I — Public API (integration and usage)](#help_core.part-i-public-api-integration-and-usage)
+- [Part I — Public API (end user)](#parte-i-api-p-blica-usuario-final)
+  - [API for module help_core.py (EN)](#api-del-m-dulo-help-core-py-es)
+    - [Part I — Public API (integration and usage)](#help_core.parte-i-api-p-blica-integraci-n-y-uso)
     - [1. ShowHelpOverlay](#help_core.ShowHelpOverlay)
-      - [Signature](#help_core.signature)
-      - [Description](#help_core.description)
-      - [Parameters](#help_core.parameters)
-      - [Behavior and relevant details](#help_core.behavior-and-relevant-details)
-      - [Minimal example](#help_core.minimal-example)
-      - [Limitations](#help_core.limitations)
+      - [Signature](#help_core.firma)
+      - [Description](#help_core.descripci-n)
+      - [Parameters](#help_core.par-metros)
+      - [Behavior and relevant details](#help_core.comportamiento-y-detalles-relevantes)
+      - [Minimal example](#help_core.ejemplo-m-nimo)
+      - [Limitations](#help_core.limitaciones)
     - [2. open_help_standalone](#help_core.open_help_standalone)
-      - [Signature](#help_core.signature-2)
-      - [Description](#help_core.description-2)
-      - [Parameters (integrator level)](#help_core.parameters-integrator-level)
-      - [Minimal example](#help_core.minimal-example-2)
-    - [3. Minimal integration contract (standalone vs overlay)](#help_core.3-minimal-integration-contract-standalone-vs-overlay)
-  - [API for module help_viewer_impl.py (EN)](#help_core.api-for-module-help_viewer_impl-py)
-    - [Part I — Public API (integration and usage)](#help_viewer_impl.part-i-public-api-integration-and-usage)
+      - [Signature](#help_core.firma-2)
+      - [Description](#help_core.descripci-n-2)
+      - [Parameters (integrator level)](#help_core.par-metros-nivel-integrador)
+      - [Minimal example](#help_core.ejemplo-m-nimo-2)
+    - [3. Minimal integration contract (standalone vs overlay)](#help_core.3-contrato-m-nimo-de-integraci-n-standalone-vs-overlay)
+  - [API for module help_viewer_impl.py (EN)](#help_core.api-del-m-dulo-help-viewer-impl-py-es)
+    - [Part I — Public API (integration and usage)](#help_viewer_impl.parte-i-api-p-blica-integraci-n-y-uso)
     - [1. HelpConfig (dataclass)](#help_viewer_impl.HelpConfig)
-      - [Description](#help_viewer_impl.description)
-      - [Fields](#help_viewer_impl.fields)
-      - [Usage notes](#help_viewer_impl.usage-notes)
+      - [Description](#help_viewer_impl.descripci-n)
+      - [Fields](#help_viewer_impl.campos)
+      - [Usage notes](#help_viewer_impl.notas-de-uso)
     - [2. HelpViewer](#help_viewer_impl.HelpViewer)
       - [2.1 Constructor](#help_viewer_impl.2-1-constructor)
-      - [2.2 Embedded usage (“widget” mode)](#help_viewer_impl.2-2-embedded-usage-widget-mode)
-      - [2.3 Standalone usage](#help_viewer_impl.2-3-standalone-usage)
-      - [2.4 Optional adapter as_interactive()](#help_viewer_impl.2-4-optional-adapter-as_interactive)
-    - [3. Anchors and links](#help_viewer_impl.3-anchors-and-links)
-      - [3.1 Explicit anchors (HTML)](#help_viewer_impl.3-1-explicit-anchors-html)
-      - [3.2 Automatic anchors from headings](#help_viewer_impl.3-2-automatic-anchors-from-headings)
-      - [3.3 http(s) links](#help_viewer_impl.3-3-http-s-links)
-    - [4. Images](#help_viewer_impl.4-images)
-    - [5. Tables](#help_viewer_impl.5-tables)
-- [Part II — Maintenance API (developers)](#help_viewer_impl.part-ii-maintenance-api-developers)
-  - [API for module help_core.py (EN)](#help_viewer_impl.api-for-module-help_core-py)
-    - [Part II — Internal / maintenance API (related to this module)](#help_core.part-ii-internal-maintenance-api-related-to-this-module)
-    - [4. Role of help_core.py in the architecture](#help_core.4-role-of-help_core-py-in-the-architecture)
-    - [5. Dependencies and imported symbols](#help_core.5-dependencies-and-imported-symbols)
-    - [6. Relevant implementation details](#help_core.6-relevant-implementation-details)
-      - [6.1 Modal overlay and frozen frame](#help_core.6-1-modal-overlay-and-frozen-frame)
-      - [6.2 Autorepeat handling](#help_core.6-2-autorepeat-handling)
+      - [2.2 Embedded usage (“widget” mode)](#help_viewer_impl.2-2-uso-embebido-modo-widget)
+      - [2.3 Standalone usage](#help_viewer_impl.2-3-uso-standalone)
+      - [2.4 Optional adapter as_interactive()](#help_viewer_impl.2-4-adaptador-opcional-as_interactive)
+    - [3. Anchors and links](#help_viewer_impl.3-anclas-y-links)
+      - [3.1 Explicit anchors (HTML)](#help_viewer_impl.3-1-anclas-expl-citas-html)
+      - [3.2 Automatic anchors from headings](#help_viewer_impl.3-2-anclas-autom-ticas-por-encabezados)
+      - [3.3 http(s) links](#help_viewer_impl.3-3-links-http-s)
+    - [4. Images](#help_viewer_impl.4-im-genes)
+    - [5. Tables](#help_viewer_impl.5-tablas)
+- [Part II — Maintenance API (developers)](#help_viewer_impl.parte-ii-api-de-mantenimiento-desarrolladores)
+  - [API for module help_core.py (EN)](#help_viewer_impl.api-del-m-dulo-help-core-py-es)
+    - [Part II — Internal / maintenance API (related to this module)](#help_core.parte-ii-api-interna-de-mantenimiento-relacionada-con-este-m-dulo)
+    - [4. Role of help_core.py in the architecture](#help_core.4-papel-de-help-core-py-en-la-arquitectura)
+    - [5. Dependencies and imported symbols](#help_core.5-dependencias-y-s-mbolos-importados)
+    - [6. Relevant implementation details](#help_core.6-detalles-de-implementaci-n-relevantes)
+      - [6.1 Modal overlay and frozen frame](#help_core.6-1-overlay-modal-y-frame-congelado)
+      - [6.2 Autorepeat handling](#help_core.6-2-gesti-n-de-autorepeat)
       - [6.3 Legacy variant of ShowHelpOverlay (commented)](#help_core.ShowHelpOverlay-2)
-    - [7. Manual testing (related demos)](#help_core.7-manual-testing-related-demos)
-    - [8. Known issues / operational notes](#help_core.8-known-issues-operational-notes)
-    - [9. History and compatibility](#help_core.9-history-and-compatibility)
-    - [10. Document changelog](#help_core.10-document-changelog)
-  - [API for module help_viewer_impl.py (EN)](#help_core.api-for-module-help_viewer_impl-py-2)
-    - [Part II — Internal / maintenance API](#help_viewer_impl.part-ii-internal-maintenance-api)
+    - [7. Manual testing (related demos)](#help_core.7-testing-manual-demos-relacionadas)
+    - [8. Known issues / operational notes](#help_core.8-problemas-conocidos-notas-operativas)
+    - [9. History and compatibility](#help_core.9-historial-y-compatibilidad)
+    - [10. Document changelog](#help_core.10-changelog-del-documento)
+  - [API for module help_viewer_impl.py (EN)](#help_core.api-del-m-dulo-help-viewer-impl-py-es-2)
+    - [Part II — Internal / maintenance API](#help_viewer_impl.parte-ii-api-interna-de-mantenimiento)
     - [6. Style (DEFAULT_STYLE and _load_style)](#help_viewer_impl.DEFAULT_STYLE)
     - [7. Composition and structure of _lines](#help_viewer_impl._lines)
-      - [7.1 self._blocks (input)](#help_viewer_impl.7-1-self-blocks-input)
-      - [7.2 self._lines (composition output)](#help_viewer_impl.7-2-self-lines-composition-output)
+      - [7.1 self._blocks (input)](#help_viewer_impl.7-1-self-blocks-entrada)
+      - [7.2 self._lines (composition output)](#help_viewer_impl.7-2-self-lines-salida-de-composici-n)
     - [8. Render (draw) and scroll](#help_viewer_impl.draw)
     - [9. Events (handle_event) and “scroll limit”](#help_viewer_impl.handle_event)
-    - [10. Main internal helpers (inventory)](#help_viewer_impl.10-main-internal-helpers-inventory)
-    - [11. Operational notes and technical debt](#help_viewer_impl.11-operational-notes-and-technical-debt)
-  - [API for module help_mini_markdown.py (EN)](#help_viewer_impl.api-for-module-help_mini_markdown-py)
-    - [Part II — Internal / maintenance API](#help_mini_markdown.part-ii-internal-maintenance-api)
+    - [10. Main internal helpers (inventory)](#help_viewer_impl.10-helpers-internos-principales-inventario)
+    - [11. Operational notes and technical debt](#help_viewer_impl.11-notas-operativas-y-deuda-t-cnica)
+  - [API for module help_mini_markdown.py (EN)](#help_viewer_impl.api-del-m-dulo-help-mini-markdown-py-es)
+    - [Part II — Internal / maintenance API](#help_mini_markdown.parte-ii-api-interna-de-mantenimiento)
     - [1. Class _MiniMarkdown](#help_mini_markdown._MiniMarkdown)
       - [1.1 Constructor](#help_mini_markdown.1-1-constructor)
     - [2. normalize(text)](#help_mini_markdown.2-normalize-text)
-      - [Signature](#help_mini_markdown.signature)
-      - [Description](#help_mini_markdown.description)
-      - [Returns](#help_mini_markdown.returns)
+      - [Signature](#help_mini_markdown.firma)
+      - [Description](#help_mini_markdown.descripci-n)
+      - [Returns](#help_mini_markdown.devuelve)
     - [3. parse(text)](#help_mini_markdown.3-parse-text)
-      - [Signature](#help_mini_markdown.signature-2)
-      - [Description](#help_mini_markdown.description-2)
-      - [Emitted block types (dict)](#help_mini_markdown.emitted-block-types-dict)
+      - [Signature](#help_mini_markdown.firma-2)
+      - [Description](#help_mini_markdown.descripci-n-2)
+      - [Emitted block types (dict)](#help_mini_markdown.tipos-de-bloque-emitidos-dict)
     - [4. tokenize_inline(text)](#help_mini_markdown.4-tokenize-inline-text)
-      - [Signature](#help_mini_markdown.signature-3)
-      - [Description](#help_mini_markdown.description-3)
-      - [Output format (“run”)](#help_mini_markdown.output-format-run)
-      - [Important rules](#help_mini_markdown.important-rules)
-    - [5. Maintenance details and decisions](#help_mini_markdown.5-maintenance-details-and-decisions)
-      - [5.1 Emphasis regex and word boundaries](#help_mini_markdown.5-1-emphasis-regex-and-word-boundaries)
-      - [5.2 Fenced code without language](#help_mini_markdown.5-2-fenced-code-without-language)
-      - [5.3 Double fence-closing block at EOF (note)](#help_mini_markdown.5-3-double-fence-closing-block-at-eof-note)
+      - [Signature](#help_mini_markdown.firma-3)
+      - [Description](#help_mini_markdown.descripci-n-3)
+      - [Output format (“run”)](#help_mini_markdown.formato-de-salida-run)
+      - [Important rules](#help_mini_markdown.reglas-importantes)
+    - [5. Maintenance details and decisions](#help_mini_markdown.5-detalles-y-decisiones-de-mantenimiento)
+      - [5.1 Emphasis regex and word boundaries](#help_mini_markdown.5-1-regex-de-nfasis-y-l-mites-de-palabra)
+      - [5.2 Fenced code without language](#help_mini_markdown.5-2-c-digo-fence-sin-lenguaje)
+      - [5.3 Double fence-closing block at EOF (note)](#help_mini_markdown.5-3-doble-bloque-de-cierre-de-fence-al-eof-nota)
     - [6. Interaction with tables (md_tables)](#help_mini_markdown.md_tables)
-  - [API for module md_tables.py (EN)](#help_mini_markdown.api-for-module-md_tables-py)
-    - [Part II — Internal / maintenance API](#md_tables.part-ii-internal-maintenance-api)
-    - [5. Internal constants](#md_tables.5-internal-constants)
+  - [API for module md_tables.py (EN)](#help_mini_markdown.api-del-m-dulo-md-tables-py-es)
+    - [Part II — Internal / maintenance API](#md_tables.parte-ii-api-interna-de-mantenimiento)
+    - [5. Internal constants](#md_tables.5-constantes-internas)
     - [6. TableParseResult (dataclass)](#md_tables.TableParseResult)
-      - [Usage](#md_tables.usage)
+      - [Usage](#md_tables.uso)
     - [7. is_table_start(lines, index)](#md_tables.7-is-table-start-lines-index)
-      - [Signature](#md_tables.signature)
-      - [Exact rules (as implemented)](#md_tables.exact-rules-as-implemented)
+      - [Signature](#md_tables.firma)
+      - [Exact rules (as implemented)](#md_tables.reglas-exactas-tal-y-como-est-n-implementadas)
     - [8. parse_table(lines, index)](#md_tables.8-parse-table-lines-index)
-      - [Signature](#md_tables.signature-2)
-      - [Contract of the returned block](#md_tables.returned-block-contract)
-      - [Relevant parsing rules](#md_tables.relevant-parsing-rules)
-    - [9. Internal helpers](#md_tables.9-internal-helpers)
+      - [Signature](#md_tables.firma-2)
+      - [Contract of the returned block](#md_tables.contrato-del-bloque-devuelto)
+      - [Relevant parsing rules](#md_tables.reglas-de-parseo-relevantes)
+    - [9. Internal helpers](#md_tables.9-helpers-internos)
       - [9.1 _parse_table_row(line)](#md_tables.9-1-parse-table-row-line)
       - [9.2 _parse_separator_row(line, expected_cols)](#md_tables.9-2-parse-separator-row-line-expected-cols)
       - [9.3 _normalize_row(row_cells, ncols)](#md_tables.9-3-normalize-row-row-cells-ncols)
-    - [10. Maintenance notes / decisions](#md_tables.10-maintenance-notes-decisions)
-    - [11. Relationship with other modules / docs](#md_tables.11-relationship-with-other-modules)
-  - [API for module table_renderer.py (EN)](#md_tables.api-for-module-table_renderer-py)
-    - [Part II — Internal / maintenance API](#table_renderer.part-ii-internal-maintenance-api)
-    - [5. Internal constants](#table_renderer.5-internal-constants)
+    - [10. Maintenance notes / decisions](#md_tables.10-notas-de-mantenimiento-decisiones)
+    - [11. Relationship with other modules / docs](#md_tables.11-relaci-n-con-otros-m-dulos)
+  - [API for module table_renderer.py (EN)](#md_tables.api-del-m-dulo-table-renderer-py-es)
+    - [Part II — Internal / maintenance API](#table_renderer.parte-ii-api-interna-de-mantenimiento)
+    - [5. Internal constants](#table_renderer.5-constantes-internas)
     - [6. TableRenderResult (dataclass)](#table_renderer.TableRenderResult)
     - [7. render_table(table_block, body_font, header_font)](#table_renderer.7-render-table-table-block-body-font-header-font)
-      - [Signature](#table_renderer.signature)
+      - [Signature](#table_renderer.firma)
       - [Input block contract (table_block)](#table_renderer.table_block)
-      - [Behavior](#table_renderer.behavior)
-      - [Returns](#table_renderer.returns)
-    - [8. Private helpers](#table_renderer.8-private-helpers)
+      - [Behavior](#table_renderer.comportamiento)
+      - [Returns](#table_renderer.devuelve)
+    - [8. Private helpers](#table_renderer.8-helpers-privados)
       - [8.1 _validate_table_block(table_block)](#table_renderer.8-1-validate-table-block-table-block)
       - [8.2 _blit_text_centered(...)](#table_renderer.8-2-blit-text-centered)
       - [8.3 _blit_text_aligned(...)](#table_renderer.8-3-blit-text-aligned)
       - [8.4 _draw_grid(...)](#table_renderer.8-4-draw-grid)
-    - [9. Maintenance notes](#table_renderer.9-maintenance-notes)
-  - [API for module image_cache.py (EN)](#table_renderer.api-for-module-image_cache-py)
-    - [Part II — Internal / maintenance API](#image_cache.part-ii-internal-maintenance-api)
-    - [4. Internal types](#image_cache.4-internal-types)
+    - [9. Maintenance notes](#table_renderer.9-notas-de-mantenimiento)
+  - [API for module image_cache.py (EN)](#table_renderer.api-del-m-dulo-image-cache-py-es)
+    - [Part II — Internal / maintenance API](#image_cache.parte-ii-api-interna-de-mantenimiento)
+    - [4. Internal types](#image_cache.4-tipos-internos)
       - [4.1 SurfaceInfo](#image_cache.SurfaceInfo)
       - [4.2 _ImageKey (dataclass)](#image_cache._ImageKey)
     - [5. Class ImageCache](#image_cache.ImageCache)
@@ -145,16 +145,16 @@
       - [5.2 set_base_dir(base_dir)](#image_cache.5-2-set-base-dir-base-dir)
       - [5.3 resolve_src_to_abs_path(src)](#image_cache.5-3-resolve-src-to-abs-path-src)
       - [5.4 get_scaled(src, target_width)](#image_cache.5-4-get-scaled-src-target-width)
-    - [6. Private methods](#image_cache.6-private-methods)
+    - [6. Private methods](#image_cache.6-m-todos-privados)
       - [6.1 _load_image(abs_path)](#image_cache.6-1-load-image-abs-path)
       - [6.2 _scale_to_width(surface, target_width)](#image_cache.6-2-scale-to-width-surface-target-width)
-    - [7. Maintenance considerations](#image_cache.7-maintenance-considerations)
-      - [7.1 Cache policy](#image_cache.7-1-cache-policy)
-      - [7.2 Recommended minimal changes](#image_cache.7-2-recommended-minimal-changes)
+    - [7. Maintenance considerations](#image_cache.7-consideraciones-de-mantenimiento)
+      - [7.1 Cache policy](#image_cache.7-1-pol-tica-de-cach)
+      - [7.2 Recommended minimal changes](#image_cache.7-2-cambios-m-nimos-recomendados)
 
 ---
 
-<a id="part-i-public-api-end-user"></a>
+<a id="parte-i-api-p-blica-usuario-final"></a>
 
 ## Part I — Public API (end user)
 
@@ -162,13 +162,13 @@ Entry points and types needed to integrate and use the help system (*standalone*
 
 ---
 
-<a id="api-for-module-help_core-py"></a>
+<a id="api-del-m-dulo-help-core-py-es"></a>
 
 ### API for module help_core.py (EN)
 
 ---
 
-<a id="help_core.part-i-public-api-integration-and-usage"></a>
+<a id="help_core.parte-i-api-p-blica-integraci-n-y-uso"></a>
 
 #### Part I — Public API (integration and usage)
 
@@ -179,7 +179,7 @@ Entry points and types needed to integrate and use the help system (*standalone*
 
 #### 1. ShowHelpOverlay
 
-<a id="help_core.signature"></a>
+<a id="help_core.firma"></a>
 
 ##### Signature
 
@@ -199,7 +199,7 @@ def ShowHelpOverlay(
     ...
 ```
 
-<a id="help_core.description"></a>
+<a id="help_core.descripci-n"></a>
 
 ##### Description
 
@@ -210,7 +210,7 @@ Shows help in reduced Markdown format as a **modal overlay** over the provided d
 - Freezes the incoming frame (copies the display) and restores it on each iteration before drawing the viewer,
   so the overlay appears “on top” of the frozen state.
 
-<a id="help_core.parameters"></a>
+<a id="help_core.par-metros"></a>
 
 ##### Parameters
 
@@ -224,7 +224,7 @@ Shows help in reduced Markdown format as a **modal overlay** over the provided d
 - scroll_limit_cooldown_ms (int): cooldown for the “scroll limit” event (if the viewer uses it).
 - base_dir (Optional[str]): base directory to resolve relative paths (e.g., images).
 
-<a id="help_core.behavior-and-relevant-details"></a>
+<a id="help_core.comportamiento-y-detalles-relevantes"></a>
 
 ##### Behavior and relevant details
 
@@ -237,7 +237,7 @@ Shows help in reduced Markdown format as a **modal overlay** over the provided d
   - Passes the rest of the events to viewer.handle_event(event).
   - Restores the frozen frame and draws viewer.draw(display, rect).
 
-<a id="help_core.minimal-example"></a>
+<a id="help_core.ejemplo-m-nimo"></a>
 
 ##### Minimal example
 
@@ -264,7 +264,7 @@ while running:
 pygame.quit()
 ```
 
-<a id="help_core.limitations"></a>
+<a id="help_core.limitaciones"></a>
 
 ##### Limitations
 
@@ -277,7 +277,7 @@ pygame.quit()
 
 #### 2. open_help_standalone
 
-<a id="help_core.signature-2"></a>
+<a id="help_core.firma-2"></a>
 
 ##### Signature
 
@@ -304,7 +304,7 @@ def open_help_standalone(
     ...
 ```
 
-<a id="help_core.description-2"></a>
+<a id="help_core.descripci-n-2"></a>
 
 ##### Description
 
@@ -314,7 +314,7 @@ Internally:
 1. Builds HelpConfig(...)
 2. Runs HelpViewer(cfg).open_window()
 
-<a id="help_core.parameters-integrator-level"></a>
+<a id="help_core.par-metros-nivel-integrador"></a>
 
 ##### Parameters (integrator level)
 
@@ -338,7 +338,7 @@ Internally:
 **Paths:**
 - base_dir: base to resolve relative paths (e.g., images).
 
-<a id="help_core.minimal-example-2"></a>
+<a id="help_core.ejemplo-m-nimo-2"></a>
 
 ##### Minimal example
 
@@ -351,7 +351,7 @@ open_help_standalone(md, title="Help", size=(900, 600))
 
 ---
 
-<a id="help_core.3-minimal-integration-contract-standalone-vs-overlay"></a>
+<a id="help_core.3-contrato-m-nimo-de-integraci-n-standalone-vs-overlay"></a>
 
 #### 3. Minimal integration contract (standalone vs overlay)
 
@@ -361,13 +361,13 @@ open_help_standalone(md, title="Help", size=(900, 600))
 
 ---
 
-<a id="help_core.api-for-module-help_viewer_impl-py"></a>
+<a id="help_core.api-del-m-dulo-help-viewer-impl-py-es"></a>
 
 ### API for module help_viewer_impl.py (EN)
 
 ---
 
-<a id="help_viewer_impl.part-i-public-api-integration-and-usage"></a>
+<a id="help_viewer_impl.parte-i-api-p-blica-integraci-n-y-uso"></a>
 
 #### Part I — Public API (integration and usage)
 
@@ -378,7 +378,7 @@ open_help_standalone(md, title="Help", size=(900, 600))
 
 #### 1. HelpConfig (dataclass)
 
-<a id="help_viewer_impl.description"></a>
+<a id="help_viewer_impl.descripci-n"></a>
 
 ##### Description
 
@@ -391,7 +391,7 @@ Configuration container for the viewer.
   - Interaction parameters (wheel_step, limit callback)
   - Style parameters (optional JSON, overrides, fonts)
 
-<a id="help_viewer_impl.fields"></a>
+<a id="help_viewer_impl.campos"></a>
 
 ##### Fields
 
@@ -431,7 +431,7 @@ class HelpConfig:
     kernel_bg: Optional[RGB] = None
 ```
 
-<a id="help_viewer_impl.usage-notes"></a>
+<a id="help_viewer_impl.notas-de-uso"></a>
 
 ##### Usage notes
 
@@ -468,7 +468,7 @@ Creates the viewer:
 
 ---
 
-<a id="help_viewer_impl.2-2-embedded-usage-widget-mode"></a>
+<a id="help_viewer_impl.2-2-uso-embebido-modo-widget"></a>
 
 ##### 2.2 Embedded usage (“widget” mode)
 
@@ -525,7 +525,7 @@ def wants_wheel(self) -> bool: ...
 
 ---
 
-<a id="help_viewer_impl.2-3-standalone-usage"></a>
+<a id="help_viewer_impl.2-3-uso-standalone"></a>
 
 ##### 2.3 Standalone usage
 
@@ -551,7 +551,7 @@ def open_window(self) -> None:
 
 ---
 
-<a id="help_viewer_impl.2-4-optional-adapter-as_interactive"></a>
+<a id="help_viewer_impl.2-4-adaptador-opcional-as_interactive"></a>
 
 ##### 2.4 Optional adapter as_interactive()
 
@@ -574,11 +574,11 @@ Useful if your GUI/framework expects that contract and you want to plug in HelpV
 
 ---
 
-<a id="help_viewer_impl.3-anchors-and-links"></a>
+<a id="help_viewer_impl.3-anclas-y-links"></a>
 
 #### 3. Anchors and links
 
-<a id="help_viewer_impl.3-1-explicit-anchors-html"></a>
+<a id="help_viewer_impl.3-1-anclas-expl-citas-html"></a>
 
 ##### 3.1 Explicit anchors (HTML)
 The parser can emit blocks {"type":"anchor","id":...} from `<a id="..."></a>`.
@@ -586,7 +586,7 @@ The viewer:
 - registers them in self._anchors[id] = y
 - allows jumping with #id links on click.
 
-<a id="help_viewer_impl.3-2-automatic-anchors-from-headings"></a>
+<a id="help_viewer_impl.3-2-anclas-autom-ticas-por-encabezados"></a>
 
 ##### 3.2 Automatic anchors from headings
 During composition (_compose_all), for each h1..h6:
@@ -594,7 +594,7 @@ During composition (_compose_all), for each h1..h6:
 - registers self._anchors[slug] = y
 - registers a variant “without numeric prefix” (e.g. 2-3-...-title → title)
 
-<a id="help_viewer_impl.3-3-http-s-links"></a>
+<a id="help_viewer_impl.3-3-links-http-s"></a>
 
 ##### 3.3 http(s) links
 If you click on a marked link region and href starts with http:// or https://,
@@ -602,7 +602,7 @@ webbrowser.open(href) is called.
 
 ---
 
-<a id="help_viewer_impl.4-images"></a>
+<a id="help_viewer_impl.4-im-genes"></a>
 
 #### 4. Images
 
@@ -616,7 +616,7 @@ In debug mode (F2), the alt text is overlaid as a label on the image.
 
 ---
 
-<a id="help_viewer_impl.5-tables"></a>
+<a id="help_viewer_impl.5-tablas"></a>
 
 #### 5. Tables
 
@@ -630,7 +630,7 @@ In debug mode (F2), the alt text is overlaid as a label on the image.
 
 ---
 
-<a id="help_viewer_impl.part-ii-maintenance-api-developers"></a>
+<a id="help_viewer_impl.parte-ii-api-de-mantenimiento-desarrolladores"></a>
 
 ## Part II — Maintenance API (developers)
 
@@ -682,20 +682,20 @@ This section describes **what imports what** (module level) according to the cur
 
 ---
 
-<a id="help_viewer_impl.api-for-module-help_core-py"></a>
+<a id="help_viewer_impl.api-del-m-dulo-help-core-py-es"></a>
 
 ### API for module help_core.py (EN)
 
 ---
 
-<a id="help_core.part-ii-internal-maintenance-api-related-to-this-module"></a>
+<a id="help_core.parte-ii-api-interna-de-mantenimiento-relacionada-con-este-m-dulo"></a>
 
 #### Part II — Internal / maintenance API (related to this module)
 
 > This part is for maintenance: understanding the module, decisions, and safe change points.
 > It is not intended for integrators.
 
-<a id="help_core.4-role-of-help_core-py-in-the-architecture"></a>
+<a id="help_core.4-papel-de-help-core-py-en-la-arquitectura"></a>
 
 #### 4. Role of help_core.py in the architecture
 
@@ -709,7 +709,7 @@ It should not contain complex parsing/rendering logic: that belongs in specializ
 
 ---
 
-<a id="help_core.5-dependencies-and-imported-symbols"></a>
+<a id="help_core.5-dependencias-y-s-mbolos-importados"></a>
 
 #### 5. Dependencies and imported symbols
 
@@ -724,11 +724,11 @@ Its full documentation must live in the parser module.
 
 ---
 
-<a id="help_core.6-relevant-implementation-details"></a>
+<a id="help_core.6-detalles-de-implementaci-n-relevantes"></a>
 
 #### 6. Relevant implementation details
 
-<a id="help_core.6-1-modal-overlay-and-frozen-frame"></a>
+<a id="help_core.6-1-overlay-modal-y-frame-congelado"></a>
 
 ##### 6.1 Modal overlay and frozen frame
 
@@ -739,7 +739,7 @@ ShowHelpOverlay does:
 
 This prevents artifacts and lets you “see” the frozen state under the help.
 
-<a id="help_core.6-2-autorepeat-handling"></a>
+<a id="help_core.6-2-gesti-n-de-autorepeat"></a>
 
 ##### 6.2 Autorepeat handling
 
@@ -760,7 +760,7 @@ The file keeps a commented “legacy/backup” variant.
 
 ---
 
-<a id="help_core.7-manual-testing-related-demos"></a>
+<a id="help_core.7-testing-manual-demos-relacionadas"></a>
 
 #### 7. Manual testing (related demos)
 
@@ -772,7 +772,7 @@ This module is usually validated indirectly with demos:
 
 ---
 
-<a id="help_core.8-known-issues-operational-notes"></a>
+<a id="help_core.8-problemas-conocidos-notas-operativas"></a>
 
 #### 8. Known issues / operational notes
 
@@ -781,7 +781,7 @@ This module is usually validated indirectly with demos:
 
 ---
 
-<a id="help_core.9-history-and-compatibility"></a>
+<a id="help_core.9-historial-y-compatibilidad"></a>
 
 #### 9. History and compatibility
 
@@ -790,19 +790,19 @@ This module is usually validated indirectly with demos:
 
 ---
 
-<a id="help_core.10-document-changelog"></a>
+<a id="help_core.10-changelog-del-documento"></a>
 
 #### 10. Document changelog
 
 ---
 
-<a id="help_core.api-for-module-help_viewer_impl-py-2"></a>
+<a id="help_core.api-del-m-dulo-help-viewer-impl-py-es-2"></a>
 
 ### API for module help_viewer_impl.py (EN)
 
 ---
 
-<a id="help_viewer_impl.part-ii-internal-maintenance-api"></a>
+<a id="help_viewer_impl.parte-ii-api-interna-de-mantenimiento"></a>
 
 #### Part II — Internal / maintenance API
 
@@ -827,12 +827,12 @@ This module is usually validated indirectly with demos:
 
 #### 7. Composition and structure of _lines
 
-<a id="help_viewer_impl.7-1-self-blocks-input"></a>
+<a id="help_viewer_impl.7-1-self-blocks-entrada"></a>
 
 ##### 7.1 self._blocks (input)
 Parser output (_MiniMarkdown.parse): list of dicts per block.
 
-<a id="help_viewer_impl.7-2-self-lines-composition-output"></a>
+<a id="help_viewer_impl.7-2-self-lines-salida-de-composici-n"></a>
 
 ##### 7.2 self._lines (composition output)
 List of “renderable” dicts, with typical keys:
@@ -882,7 +882,7 @@ List of “renderable” dicts, with typical keys:
 
 ---
 
-<a id="help_viewer_impl.10-main-internal-helpers-inventory"></a>
+<a id="help_viewer_impl.10-helpers-internos-principales-inventario"></a>
 
 #### 10. Main internal helpers (inventory)
 
@@ -910,7 +910,7 @@ List of “renderable” dicts, with typical keys:
 
 ---
 
-<a id="help_viewer_impl.11-operational-notes-and-technical-debt"></a>
+<a id="help_viewer_impl.11-notas-operativas-y-deuda-t-cnica"></a>
 
 #### 11. Operational notes and technical debt
 
@@ -920,13 +920,13 @@ List of “renderable” dicts, with typical keys:
 
 ---
 
-<a id="help_viewer_impl.api-for-module-help_mini_markdown-py"></a>
+<a id="help_viewer_impl.api-del-m-dulo-help-mini-markdown-py-es"></a>
 
 ### API for module help_mini_markdown.py (EN)
 
 ---
 
-<a id="help_mini_markdown.part-ii-internal-maintenance-api"></a>
+<a id="help_mini_markdown.parte-ii-api-interna-de-mantenimiento"></a>
 
 #### Part II — Internal / maintenance API
 
@@ -971,7 +971,7 @@ It also initializes regular expressions for:
 
 #### 2. normalize(text)
 
-<a id="help_mini_markdown.signature"></a>
+<a id="help_mini_markdown.firma"></a>
 
 ##### Signature
 
@@ -980,7 +980,7 @@ def normalize(self, text: str) -> str:
     ...
 ```
 
-<a id="help_mini_markdown.description"></a>
+<a id="help_mini_markdown.descripci-n"></a>
 
 ##### Description
 
@@ -988,7 +988,7 @@ Normalizes newlines and tabs:
 - \t → spaces according to tab_size
 - \r\n and \r → \n
 
-<a id="help_mini_markdown.returns"></a>
+<a id="help_mini_markdown.devuelve"></a>
 
 ##### Returns
 
@@ -1000,7 +1000,7 @@ str: normalized text.
 
 #### 3. parse(text)
 
-<a id="help_mini_markdown.signature-2"></a>
+<a id="help_mini_markdown.firma-2"></a>
 
 ##### Signature
 
@@ -1009,7 +1009,7 @@ def parse(self, text: str) -> List[Dict[str, Any]]:
     ...
 ```
 
-<a id="help_mini_markdown.description-2"></a>
+<a id="help_mini_markdown.descripci-n-2"></a>
 
 ##### Description
 
@@ -1029,7 +1029,7 @@ The parser is line-based and recognizes blocks in this order (simplified):
 9. Tables: detected by md_tables.is_table_start and parsed by md_tables.parse_table
 10. Paragraphs: accumulation of lines until a “break” (another block)
 
-<a id="help_mini_markdown.emitted-block-types-dict"></a>
+<a id="help_mini_markdown.tipos-de-bloque-emitidos-dict"></a>
 
 ##### Emitted block types (dict)
 
@@ -1133,7 +1133,7 @@ The exact block is built by parse_table(...) from module md_tables.
 
 #### 4. tokenize_inline(text)
 
-<a id="help_mini_markdown.signature-3"></a>
+<a id="help_mini_markdown.firma-3"></a>
 
 ##### Signature
 
@@ -1142,7 +1142,7 @@ def tokenize_inline(self, text: str) -> List[Dict[str, Any]]:
     ...
 ```
 
-<a id="help_mini_markdown.description-3"></a>
+<a id="help_mini_markdown.descripci-n-3"></a>
 
 ##### Description
 
@@ -1162,7 +1162,7 @@ Tokenization follows these phases:
    - Trims typical trailing punctuation (.,;:!?)]}"')
    - Special case for ) to avoid trimming if parenthesis balance is not “extra”.
 
-<a id="help_mini_markdown.output-format-run"></a>
+<a id="help_mini_markdown.formato-de-salida-run"></a>
 
 ##### Output format (“run”)
 
@@ -1179,7 +1179,7 @@ Each run has this form:
 }
 ```
 
-<a id="help_mini_markdown.important-rules"></a>
+<a id="help_mini_markdown.reglas-importantes"></a>
 
 ##### Important rules
 
@@ -1193,11 +1193,11 @@ Each run has this form:
 
 ---
 
-<a id="help_mini_markdown.5-maintenance-details-and-decisions"></a>
+<a id="help_mini_markdown.5-detalles-y-decisiones-de-mantenimiento"></a>
 
 #### 5. Maintenance details and decisions
 
-<a id="help_mini_markdown.5-1-emphasis-regex-and-word-boundaries"></a>
+<a id="help_mini_markdown.5-1-regex-de-nfasis-y-l-mites-de-palabra"></a>
 
 ##### 5.1 Emphasis regex and word boundaries
 
@@ -1206,14 +1206,14 @@ Each run has this form:
 
 Goal: avoid false positives like price*2.
 
-<a id="help_mini_markdown.5-2-fenced-code-without-language"></a>
+<a id="help_mini_markdown.5-2-c-digo-fence-sin-lenguaje"></a>
 
 ##### 5.2 Fenced code without language
 
 - Any line starting with ``` is detected (regex: ^\s*```.*$).
 - The “language” is not detected/stored.
 
-<a id="help_mini_markdown.5-3-double-fence-closing-block-at-eof-note"></a>
+<a id="help_mini_markdown.5-3-doble-bloque-de-cierre-de-fence-al-eof-nota"></a>
 
 ##### 5.3 Double fence-closing block at EOF (note)
 
@@ -1241,17 +1241,17 @@ if in_fence and fence_buf:
 
 ---
 
-<a id="help_mini_markdown.api-for-module-md_tables-py"></a>
+<a id="help_mini_markdown.api-del-m-dulo-md-tables-py-es"></a>
 
 ### API for module md_tables.py (EN)
 
 ---
 
-<a id="md_tables.part-ii-internal-maintenance-api"></a>
+<a id="md_tables.parte-ii-api-interna-de-mantenimiento"></a>
 
 #### Part II — Internal / maintenance API
 
-<a id="md_tables.5-internal-constants"></a>
+<a id="md_tables.5-constantes-internas"></a>
 
 #### 5. Internal constants
 
@@ -1285,7 +1285,7 @@ class TableParseResult:
     next_index: int
 ```
 
-<a id="md_tables.usage"></a>
+<a id="md_tables.uso"></a>
 
 ##### Usage
 
@@ -1300,7 +1300,7 @@ parse_table(...) returns an instance with:
 
 #### 7. is_table_start(lines, index)
 
-<a id="md_tables.signature"></a>
+<a id="md_tables.firma"></a>
 
 ##### Signature
 
@@ -1310,7 +1310,7 @@ def is_table_start(lines: Sequence[str], index: int) -> bool:
     ...
 ```
 
-<a id="md_tables.exact-rules-as-implemented"></a>
+<a id="md_tables.reglas-exactas-tal-y-como-est-n-implementadas"></a>
 
 ##### Exact rules (as implemented)
 
@@ -1330,7 +1330,7 @@ If all are met: True; otherwise: False.
 
 #### 8. parse_table(lines, index)
 
-<a id="md_tables.signature-2"></a>
+<a id="md_tables.firma-2"></a>
 
 ##### Signature
 
@@ -1340,7 +1340,7 @@ def parse_table(lines: Sequence[str], index: int) -> Optional[TableParseResult]:
     ...
 ```
 
-<a id="md_tables.returned-block-contract"></a>
+<a id="md_tables.contrato-del-bloque-devuelto"></a>
 
 ##### Contract of the returned block
 
@@ -1361,7 +1361,7 @@ The dict block has this **exact** schema:
 - rows: list of rows, each a list of strings of length ncols.
 - row_overflow: list parallel to rows, True if that row had more cells than ncols.
 
-<a id="md_tables.relevant-parsing-rules"></a>
+<a id="md_tables.reglas-de-parseo-relevantes"></a>
 
 ##### Relevant parsing rules
 
@@ -1377,7 +1377,7 @@ The dict block has this **exact** schema:
 
 ---
 
-<a id="md_tables.9-internal-helpers"></a>
+<a id="md_tables.9-helpers-internos"></a>
 
 #### 9. Internal helpers
 
@@ -1438,7 +1438,7 @@ Agreed rules (exact):
 
 ---
 
-<a id="md_tables.10-maintenance-notes-decisions"></a>
+<a id="md_tables.10-notas-de-mantenimiento-decisiones"></a>
 
 #### 10. Maintenance notes / decisions
 
@@ -1451,7 +1451,7 @@ Agreed rules (exact):
 
 ---
 
-<a id="md_tables.11-relationship-with-other-modules"></a>
+<a id="md_tables.11-relaci-n-con-otros-m-dulos"></a>
 
 #### 11. Relationship with other modules
 
@@ -1461,17 +1461,17 @@ Agreed rules (exact):
 
 ---
 
-<a id="md_tables.api-for-module-table_renderer-py"></a>
+<a id="md_tables.api-del-m-dulo-table-renderer-py-es"></a>
 
 ### API for module table_renderer.py (EN)
 
 ---
 
-<a id="table_renderer.part-ii-internal-maintenance-api"></a>
+<a id="table_renderer.parte-ii-api-interna-de-mantenimiento"></a>
 
 #### Part II — Internal / maintenance API
 
-<a id="table_renderer.5-internal-constants"></a>
+<a id="table_renderer.5-constantes-internas"></a>
 
 #### 5. Internal constants
 
@@ -1525,7 +1525,7 @@ class TableRenderResult:
 
 #### 7. render_table(table_block, body_font, header_font)
 
-<a id="table_renderer.signature"></a>
+<a id="table_renderer.firma"></a>
 
 ##### Signature
 
@@ -1557,7 +1557,7 @@ Must comply exactly with:
 }
 ```
 
-<a id="table_renderer.behavior"></a>
+<a id="table_renderer.comportamiento"></a>
 
 ##### Behavior
 
@@ -1594,7 +1594,7 @@ Must comply exactly with:
 - vertical separators between columns
 - if there is a gutter: separator line and border rectangle of the gutter
 
-<a id="table_renderer.returns"></a>
+<a id="table_renderer.devuelve"></a>
 
 ##### Returns
 
@@ -1602,7 +1602,7 @@ TableRenderResult(surface=<Surface>, width=<int>, height=<int>)
 
 ---
 
-<a id="table_renderer.8-private-helpers"></a>
+<a id="table_renderer.8-helpers-privados"></a>
 
 #### 8. Private helpers
 
@@ -1650,7 +1650,7 @@ Normalizes:
 
 ---
 
-<a id="table_renderer.9-maintenance-notes"></a>
+<a id="table_renderer.9-notas-de-mantenimiento"></a>
 
 #### 9. Maintenance notes
 
@@ -1665,17 +1665,17 @@ Normalizes:
 
 ---
 
-<a id="table_renderer.api-for-module-image_cache-py"></a>
+<a id="table_renderer.api-del-m-dulo-image-cache-py-es"></a>
 
 ### API for module image_cache.py (EN)
 
 ---
 
-<a id="image_cache.part-ii-internal-maintenance-api"></a>
+<a id="image_cache.parte-ii-api-interna-de-mantenimiento"></a>
 
 #### Part II — Internal / maintenance API
 
-<a id="image_cache.4-internal-types"></a>
+<a id="image_cache.4-tipos-internos"></a>
 
 #### 4. Internal types
 
@@ -1781,7 +1781,7 @@ Flow:
 
 ---
 
-<a id="image_cache.6-private-methods"></a>
+<a id="image_cache.6-m-todos-privados"></a>
 
 #### 6. Private methods
 
@@ -1830,18 +1830,18 @@ Caught errors: ValueError, pygame.error.
 
 ---
 
-<a id="image_cache.7-maintenance-considerations"></a>
+<a id="image_cache.7-consideraciones-de-mantenimiento"></a>
 
 #### 7. Maintenance considerations
 
-<a id="image_cache.7-1-cache-policy"></a>
+<a id="image_cache.7-1-pol-tica-de-cach"></a>
 
 ##### 7.1 Cache policy
 
 - The cache stays in memory and grows with combinations (abs_path, target_width).
 - If the application frequently changes the target width (resizes), it can grow quite a bit.
 
-<a id="image_cache.7-2-recommended-minimal-changes"></a>
+<a id="image_cache.7-2-cambios-m-nimos-recomendados"></a>
 
 ##### 7.2 Recommended minimal changes
 

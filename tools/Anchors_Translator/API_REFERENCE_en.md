@@ -13,7 +13,7 @@
 - The **public API** is the part of the API considered more stable and easier to use, oriented to the end user. Ideal to add a solid help system to a Pygame game.
 - The **maintenance API** is a much broader part of the API and may change more frequently; it is documented to facilitate maintenance and the addition of improvements and extensions, as well as to debug errors or deficiencies in the code.
 
-![Public API vs Maintenance API](APIs_public_vs_mantenim.png)
+![Public API vs Maintenance API](APIs_pubica_vs_mantenim.png)
 
 ## Requirements and compatibility
 
