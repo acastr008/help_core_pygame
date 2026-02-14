@@ -14,6 +14,12 @@
   - Retocar navegación de todos los documentos *_es.md añadiendo enlace al índice general. 
   - Crear las versiones de toda la documentacion en Inles *_en.md
 
+- (14-feb-2026) *********** TODO LISTO PARA SUBIRE ESTA VERSION 0.1.2 A PYPI *************
+
+  - Creamos una utilidad de verificación. tools/diagnose_pypi_readiness.py 
+
+- (13-feb-2026) *********  EL PROYECTO HA QUEDADO LISTO PARA SUBIRLO A PYPI ***********
+
 - (13-feb-2026) Se ha revisado cuidadosamente API_REFERENCE_(en/es).md corrigiendo inconsistencias y anclas/enlaces
 
 - (10-feb-2026) Se han estandarizado las cabeceras de las librerías help_core_pygame/src/*.py
