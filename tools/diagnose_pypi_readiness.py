@@ -503,6 +503,37 @@ def remove_dir_tree(path: Path) -> None:
     except OSError:
         pass
 
+def PrintChuleta():
+    Chuleta=f"""
+
+CHULETA (Si todo es OK, para subir a PyPI faltaría hacer lo siguiente:)
+=======================================================================
+
+1) Limpiar artefactos antiguos (evitar confusiones) 
+    Comando: rm -rf dist/ build/ *.egg-info 
+
+2) Reconstruir sdist + wheel (artefactos definitivos) 
+    Comando: python3 -m build 
+
+3) Validar antes de subir a PyPI 
+    Comando: python3 -m twine check dist/* 
+
+4) Subir a PyPI (credenciales en ~/.pypirc) 
+    Comando: python3 -m twine upload dist/* 
+
+5) Verificar en PyPI que aparece la nueva versión 
+    Acción: abre la página del proyecto y confirma que “Latest version” es la nueva y que el README
+    https://pypi.org/project/{PYPI_PROJECT_NAME}/
+
+6) Los entornos que uses con '{PYPI_PROJECT_NAME}' deberás actualizarlos.
+    source /home/antonio/pyenv_goliat/bin/activate
+    pip list | grep {PYPI_PROJECT_NAME}
+    python3 -m pip install -U {PYPI_PROJECT_NAME}
+    pip list | grep {PYPI_PROJECT_NAME}
+
+"""
+    print(Chuleta)
+
 
 def main() -> int:
     report = DiagnosisReport()
@@ -681,7 +712,7 @@ def main() -> int:
             [
                 str(clean_python),
                 "-c",
-                "import importlib.metadata as m; print(m.version('help-core-pygame'))",
+                "import importlib.metadata as m; print(m.version(PYPI_PROJECT_NAME))",
             ],
             cwd=project_root,
         )
@@ -704,28 +735,7 @@ def main() -> int:
     report.print()
 
     input("PULSE <Intro> para terminar")
-    Chuleta="""
-
-CHULETA (Si todo es OK, para subir a PyPI faltaría hacer lo siguiente:)
-=======================================================================
-
-1) Limpiar artefactos antiguos (evitar confusiones) 
-    Comando: rm -rf dist/ build/ *.egg-info 
-
-2) Reconstruir sdist + wheel (artefactos definitivos) 
-    Comando: python3 -m build 
-
-3) Validar antes de subir a PyPI 
-    Comando: python3 -m twine check dist/* 
-
-4) Subir a PyPI (credenciales en ~/.pypirc) 
-    Comando: python3 -m twine upload dist/* 
-
-5) Verificar en PyPI que aparece la nueva versión 
-    Acción: abre la página del proyecto y confirma que “Latest version” es la nueva y que el README
-
-"""
-    print(Chuleta)
+    PrintChuleta()
     return report.exit_code()
 
 

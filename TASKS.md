@@ -7,12 +7,7 @@
 
 # Tareas ya realizadas por orden cronológico
 
-- (9-feb-2026) Repaso final a toda la documentación.
-  
-  - README_es.md y README.md
-  - Crear índice general INDEX_es.md 
-  - Retocar navegación de todos los documentos *_es.md añadiendo enlace al índice general. 
-  - Crear las versiones de toda la documentacion en Inles *_en.md
+- (14-feb-2026) *********** Se ha subido la VERSION 0.1.2 A PYPI *************
 
 - (14-feb-2026) *********** TODO LISTO PARA SUBIRE ESTA VERSION 0.1.2 A PYPI *************
 
@@ -23,6 +18,13 @@
 - (13-feb-2026) Se ha revisado cuidadosamente API_REFERENCE_(en/es).md corrigiendo inconsistencias y anclas/enlaces
 
 - (10-feb-2026) Se han estandarizado las cabeceras de las librerías help_core_pygame/src/*.py
+
+- (9-feb-2026) Repaso final a toda la documentación.
+  
+  - README_es.md y README.md
+  - Crear índice general INDEX_es.md 
+  - Retocar navegación de todos los documentos *_es.md añadiendo enlace al índice general. 
+  - Crear las versiones de toda la documentacion en Inles *_en.md
 
 - (8-feb-2026) Creamos los documentos OVERVIEW_es.md y MINIMARKDOWN_GUIDE_es.md
 
